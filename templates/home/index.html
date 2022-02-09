@@ -1,0 +1,19 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% block content %}
+    <link rel="stylesheet" href="{% static "css/hexagon-el.css" %}">
+    <ul id="grid" class="clear">
+        {% for gr in groups %}
+            <li>
+                <a class="hexagon-link" href="/excel/{{ gr.name }}">
+                    <div class="hexagon"><h1 style="margin: 50% auto; text-align: center">{{ gr.name }}</h1></div>
+                </a>
+            </li>
+        {% endfor %}
+	<li>
+             <a class="hexagon-link" href="/admin">
+		<div class="hexagon" style="background: #38070ce6;"><h1 style="margin: 50% auto; text-align: center">Managements</h1></div>
+             </a>
+        </li>
+    </ul>
+{% endblock content %}

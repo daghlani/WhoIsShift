@@ -1,0 +1,200 @@
+<script>
+    const deepMerge = (obj1, obj2) => {
+        for (var p in obj2) {
+            try {
+                if (obj2[p].constructor == Object) {
+                    obj1[p] = deepMerge(obj1[p], obj2[p]);
+                } else {
+                    obj1[p] = obj2[p];
+                }
+            } catch (e) {
+                obj1[p] = obj2[p];
+            }
+        }
+        return obj1;
+    };
+
+    class Func {
+        constructor(props) {
+            this.canvas = {
+                element: props.canvas,
+                context: props.canvas.getContext('2d')
+            };
+            this.cursor = {
+                x: this.canvas.element.clientWidth / 2,
+                y: this.canvas.element.clientHeight / 2
+            },
+                this.styles = {
+                    view: {
+                        background: '#202020',
+                    },
+                    polygon: {
+                        size: 60,
+                        background: '#303030',
+                        borderColor: '#404040',
+                        borderWidth: 4,
+                        margin: 4,
+                    },
+                    light: {
+                        color: '#0000ff',
+                        size: 1000,
+                    }
+                };
+            this.init();
+        }
+
+        setStyles(newSettings = {}) {
+            deepMerge(this.styles, newSettings);
+            this.render();
+        }
+
+        getStyles() {
+            return this.styles;
+        }
+
+        setRatio() {
+            let {context, element} = this.canvas,
+                ratio = window.devicePixelRatio || 1;
+            element.width = element.clientWidth * ratio;
+            element.height = element.clientHeight * ratio;
+            context.scale(ratio, ratio);
+        }
+
+        clear() {
+            let {context, element} = this.canvas;
+            context.clearRect(0, 0, element.width, element.height);
+        }
+
+        init() {
+            this.render();
+            this.listeners();
+        };
+
+        drawBackground() {
+            let {canvas, styles} = this,
+                {context, element} = canvas,
+                {view} = styles;
+            context.fillStyle = view.background;
+            context.fillRect(0, 0, element.width, element.height);
+        }
+
+        drawPolygon(coords) {
+            let {canvas, styles} = this,
+                {context, element} = canvas,
+                {polygon} = styles;
+            context.fillStyle = polygon.background;
+            context.strokeStyle = polygon.borderColor;
+            context.lineWidth = polygon.borderWidth;
+            context.beginPath();
+            context.moveTo(coords.x + coords.size * Math.cos(0), coords.y + coords.size * Math.sin(0));
+            for (let side = 0; side < 7; side++) {
+                context.lineTo(coords.x + coords.size * Math.cos(side * 2 * Math.PI / 6), coords.y + coords.size * Math.sin(side * 2 * Math.PI / 6));
+            }
+            context.closePath();
+            context.fill();
+            context.stroke();
+        }
+
+        drawPolygons() {
+            let {canvas, styles} = this,
+                {context, element} = canvas,
+                {polygon} = styles,
+                xCount = element.clientWidth / polygon.size,
+                yCount = element.clientHeight / polygon.size * 2 + 2;
+            for (let row = 0; row <= yCount; row++) {
+                for (let col = 0; col <= xCount; col++) {
+                    let coords = {
+                        x: ((polygon.size + polygon.margin * 2) * 1.5) * col,
+                        y: (polygon.size * 0.87 + polygon.margin * 2) * row - (polygon.size / 2) * row,
+                        size: polygon.size / 2
+                    };
+                    if (row % 2) {
+                        coords.x += polygon.size + polygon.margin * 2 - (polygon.size + polygon.margin * 2) / 4
+                    }
+                    this.drawPolygon(coords);
+                }
+            }
+        }
+
+        drawLight() {
+            let {canvas, styles, cursor} = this,
+                {context, element} = canvas,
+                {light} = styles;
+            if (!cursor) return;
+
+            context.save();
+            var gradient = context.createRadialGradient(cursor.x, cursor.y, 0, cursor.x, cursor.y, light.size);
+            gradient.addColorStop(0, light.color);
+            gradient.addColorStop(0.3, 'transparent');
+            gradient.addColorStop(1, 'transparent');
+            context.fillStyle = gradient;
+            context.beginPath();
+            context.arc(cursor.x, cursor.y, light.size, 0, Math.PI * 2);
+            context.fill();
+            context.restore();
+        }
+
+        render() {
+            this.clear();
+            this.setRatio();
+            this.drawBackground();
+            this.drawLight();
+            this.drawPolygons();
+        }
+
+        listeners() {
+            let {canvas, styles} = this,
+                {context, element} = canvas;
+            window.addEventListener('resize', () => {
+                this.render();
+            });
+            element.addEventListener('mousemove', (e) => {
+                let elementOffset = element.getBoundingClientRect(),
+                    x = e.clientX - elementOffset.left,
+                    y = e.clientY - elementOffset.top;
+                this.cursor = {
+                    x,
+                    y,
+                };
+                this.render();
+            });
+            element.addEventListener('mouseout', (e) => {
+                this.cursor = false;
+                this.render();
+            });
+        }
+    }
+
+    let app = new Func({
+        canvas: document.querySelector('canvas')
+    });
+
+    const gui = new dat.GUI({name: "My GUI"});
+
+    let styles = app.getStyles()
+    Object.keys(styles).forEach((parent) => {
+        const currentFolder = gui.addFolder(parent);
+        Object.keys(styles[parent]).forEach((style) => {
+            let type = ((styles[parent][style][0] === '#') || ((parent + style).indexOf('color') >= 0) || ((parent + style).indexOf('background') >= 0)) ? 'addColor' : 'add';
+            if (type === 'add') {
+                currentFolder[type]({
+                    [style]: styles[parent][style]
+                }, style, styles[parent][style] / 2, styles[parent][style] * 2, 1)
+                    .name(style)
+                    .onChange((newValue) => {
+                        styles[parent][style] = newValue;
+                        app.setStyles(styles);
+                    });
+            }
+            if (type === 'addColor') {
+                currentFolder.addColor({
+                    value: styles[parent][style]
+                }, 'value').name(style).onChange((newValue) => {
+                        styles[parent][style] = newValue;
+                        app.setStyles(styles);
+                    }
+                );
+            }
+        })
+    });
+</script>

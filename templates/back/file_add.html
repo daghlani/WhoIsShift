@@ -1,0 +1,52 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% block content %}
+    <form method="post" enctype="multipart/form-data">{% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="{{ texts.submit }}">
+    </form>
+    <link rel="stylesheet" href="{% static '/css/bootstrap/min.css' %}">
+
+    <form>
+        <div class="form-group">
+            <label for="month">ماه</label>
+            <div>
+                <select id="month" name="month" required="required" class="custom-select">
+                    <option value="rabbit">Rabbit</option>
+                    <option value="duck">Duck</option>
+                    <option value="fish">Fish</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="year">سال</label>
+            <div>
+                <select id="year" name="year" class="custom-select">
+                    <option value="rabbit">Rabbit</option>
+                    <option value="duck">Duck</option>
+                    <option value="fish">Fish</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="phone">تلفن</label>
+            <input id="phone" name="phone" placeholder="e.g. 9090" type="text" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="related_columns">مدل ستون‌ها</label>
+            <div>
+                <select id="related_columns" name="related_columns" class="custom-select">
+                    <option value="rabbit">Rabbit</option>
+                    <option value="duck">Duck</option>
+                    <option value="fish">Fish</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <button name="submit" type="submit" class="btn btn-primary">ارسال</button>
+        </div>
+    </form>
+{% endblock %}
+{% block javascripts %}
+    <script src="{% static 'js/sortable.js' %}"></script>
+{% endblock javascripts %}

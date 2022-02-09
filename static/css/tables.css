@@ -1,0 +1,30 @@
+.table_me {
+    font-family: "Yekan", Helvetica, sans-serif s;
+    border-collapse: collapse;
+    /*width: 75%;*/
+    margin: auto;
+    padding-top: 40px;
+}
+
+.table_me td, th {
+    padding: 8px;
+    text-align: center;
+    border: 1px solid black;
+}
+
+.table_me tr:nth-child(even) {
+    background-color: rgba(81, 81, 81, 0.38);
+}
+
+.table_me tr:hover {
+    background-color: #222426;
+}
+
+.table_me th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: center;
+    background-color: #287fe5;
+    color: white;
+    border-radius: 0px;
+}
