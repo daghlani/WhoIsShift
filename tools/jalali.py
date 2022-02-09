@@ -1,3 +1,6 @@
+from datetime import datetime, timedelta
+
+
 def gregorian_to_jalali(gy, gm, gd):
     g_d_m = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334]
     if gm > 2:
@@ -64,6 +67,10 @@ def j_leap_check(year):
         return False
 
 
+def greg_to_datetime(gy, gm, gd):
+    return datetime.strptime('{}-{}-{}'.format(gy, gm, gd), "%Y-%m-%d")
+
+
 def get_last_day_in_jalali(month_number, year):
     if 1 <= month_number < 7:
         return 31
@@ -79,3 +86,18 @@ def get_last_day_in_jalali(month_number, year):
 def gregorian_to_jalali_str(gr_datetime, time_format='{}-{}-{}'):
     in_t = gregorian_to_jalali(gr_datetime.year, gr_datetime.month, gr_datetime.day)
     return time_format.format(in_t[0], in_t[1], in_t[2])
+
+
+def dates_between_as_name(start_date, end_date):
+    delta = end_date - start_date  # as timedelta
+    days = [(start_date + timedelta(days=i)).strftime("%A") for i in range(delta.days + 1)]
+    return days
+
+
+def return_day_names(jalali_year, jalali_month):
+    first_y, first_m, first_d = jalali_to_gregorian(jalali_year, jalali_month, 1)
+    end_y, end_m, end_d = jalali_to_gregorian(jalali_year, jalali_month,
+                                              get_last_day_in_jalali(jalali_month, jalali_year))
+    first_of_month = greg_to_datetime(first_y, first_m, first_d)
+    end_of_month = greg_to_datetime(end_y, end_m, end_d)
+    return dates_between_as_name(first_of_month, end_of_month)

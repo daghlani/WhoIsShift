@@ -1,6 +1,6 @@
 from django import forms
 from config.config import MonthNames
-from back.models import FileObj
+from back.models import FileObj, Shift
 
 
 # from django.core.validators import FileExtensionValidator
@@ -21,3 +21,9 @@ class FileEditForm(forms.ModelForm):
     class Meta:
         model = FileObj
         exclude = ('group_owner', 'id',)
+
+
+class ShiftForm(forms.ModelForm):
+    class Meta:
+        model = Shift
+        exclude = ('days_count', 'days_name', 'people_list',)

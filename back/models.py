@@ -16,7 +16,23 @@ class ShiftGroup(models.Model):
     owner = models.OneToOneField(User, on_delete=models.CASCADE, unique=True)
 
     def __str__(self):
-        return self.name
+        return str(self.name)
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    group = models.ForeignKey(ShiftGroup, on_delete=models.CASCADE, default=None)
+    in_shift = models.BooleanField(default=True)
+    in_night_shift = models.BooleanField(default=True)
+    in_day_shift = models.BooleanField(default=True)
+    avatar = models.ImageField(default='default.jpg', upload_to='profile_images')
+    bio = models.TextField(default=None, blank=True)
+
+    def __str__(self):
+        return self.user.username
+
+    def _username(self):
+        return self.user.username
 
 
 class ExcelColumns(models.Model):
@@ -56,3 +72,112 @@ class FileObj(models.Model):
 
     def __str__(self):
         return str(self.file.name).strip(self.storage_path).strip('.')
+
+
+class SpecialDay(models.Model):
+    group = models.OneToOneField(ShiftGroup, on_delete=models.CASCADE, default=None)
+    people_list = models.TextField(default=None)
+
+    class Meta:
+        abstract = True  # Set this model as Abstract
+
+
+class Tuesday(SpecialDay):
+    def __str__(self):
+        return self.group
+
+
+class Thursday(SpecialDay):
+    def __str__(self):
+        return self.group
+
+
+class Friday(SpecialDay):
+    def __str__(self):
+        return self.group
+
+
+class Shift(models.Model):
+    j_month_num = models.IntegerField(verbose_name=MonthNames.month, choices=MonthNames.JALALI_MONTH_CHOICES)
+    j_year_num = models.IntegerField(verbose_name=MonthNames.year, choices=MonthNames.JALALI_YEAR_CHOICES)
+    group = models.ForeignKey(ShiftGroup, on_delete=models.CASCADE, default=None)
+    people_list = models.TextField()
+    days_count = models.IntegerField()
+    days_name = models.TextField()
+
+    def __str__(self):
+        return str(self.group)
+
+
+class ShiftDay(models.Model):
+    shift = models.OneToOneField(Shift, on_delete=models.CASCADE, default=None)
+    j_year_num = models.IntegerField(verbose_name=MonthNames.year)
+    group = models.OneToOneField(ShiftGroup, on_delete=models.CASCADE, default=None)
+    night_people_list = models.TextField()
+    day_people_list = models.TextField()
+    type = models.CharField(max_length=20)
+    day_responsible = models.CharField(max_length=30, default=None)
+    night_responsible = models.CharField(max_length=30, default=None)
+
+    class Meta:
+        abstract = True  # Set this model as Abstract
+
+
+class FAR(ShiftDay):
+    def __str__(self):
+        return self.__name__
+
+
+class ORD(ShiftDay):
+    def __str__(self):
+        return self.__name__
+
+
+class KHO(ShiftDay):
+    def __str__(self):
+        return self.__name__
+
+
+class TIR(ShiftDay):
+    def __str__(self):
+        return self.__name__
+
+
+class MOR(ShiftDay):
+    def __str__(self):
+        return self.__name__
+
+
+class SHA(ShiftDay):
+    def __str__(self):
+        return self.__name__
+
+
+class MEH(ShiftDay):
+    def __str__(self):
+        return self.__name__
+
+
+class ABA(ShiftDay):
+    def __str__(self):
+        return self.__name__
+
+
+class AZA(ShiftDay):
+    def __str__(self):
+        return self.__name__
+
+
+class DAY(ShiftDay):
+    def __str__(self):
+        return self.__name__
+
+
+class BAH(ShiftDay):
+    def __str__(self):
+        return self.__name__
+
+
+class ESF(ShiftDay):
+    def __str__(self):
+        return self.__name__

@@ -2,13 +2,13 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django import template
 from django.contrib.auth.decorators import login_required
-from back.models import ShiftGroup, FileObj, ExcelColumns
+from back.models import ShiftGroup, FileObj, ExcelColumns, Profile, Shift
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 import pandas as pd
 import numpy as np
 from config.config import *
-from back.forms import DatePickerForm, FileEditForm
+from back.forms import DatePickerForm, FileEditForm, ShiftForm
 from tools.jalali import *
 from django.utils import timezone
 from django.urls import reverse
@@ -132,3 +132,38 @@ def file_add(request):
     context['texts'] = texts
     context['form'] = form
     return render(request, 'back/file_add.html', context)
+
+
+@check_grp_owner
+def create_shift(request):
+    context = glob_context()
+    if request.method == 'POST':
+        form = ShiftForm(request.POST)
+        if form.is_valid():
+            selected_month = form.cleaned_data['j_month_num']
+            selected_year = form.cleaned_data['j_year_num']
+            selected_group = form.cleaned_data['group']
+            if Shift.objects.filter(group=selected_group, j_month_num=selected_month,
+                                    j_year_num=selected_year).exists():
+                print('########################################\n'
+                      '#######   duplicate shift!!!!!!  #######\n'
+                      '########################################')
+                return redirect('/')
+            form_obj = form.save(commit=False)
+            # form_obj.people_list = Profile.objects.filter(group=selected_group).values_list('user__username')
+            form_obj.people_list = ','.join(
+                list(Profile.objects.filter(group=selected_group, in_shift=True).values_list('user__username',
+                                                                                             flat=True)))
+            list_of_days = return_day_names(selected_year, selected_month)
+            form_obj.days_name = ','.join(list_of_days)
+            form_obj.days_count = len(list_of_days)
+            form_obj.save()
+            return redirect('/')
+    else:
+        form = ShiftForm()
+    texts = dict()
+    texts['row'] = KeyValue.row
+    texts['submit'] = KeyValue.submit
+    context['texts'] = texts
+    context['form'] = form
+    return render(request, 'back/shift_create.html', context)
