@@ -57,10 +57,8 @@ def jalali_to_gregorian(jy, jm, jd):
     return [gy, gm, gd]
 
 
-ary = [1, 5, 9, 13, 17, 22, 26, 30]
-
-
 def j_leap_check(year):
+    ary = [1, 5, 9, 13, 17, 22, 26, 30]
     if year % 33 in ary:
         return True
     else:
@@ -69,6 +67,22 @@ def j_leap_check(year):
 
 def greg_to_datetime(gy, gm, gd):
     return datetime.strptime('{}-{}-{}'.format(gy, gm, gd), "%Y-%m-%d")
+
+def jalali_to_datetime(y,m,d):
+    ls = jalali_to_gregorian(y,m,d)
+    return greg_to_datetime(ls[0],ls[1],ls[2])
+
+def datetime_to_jalali(dt):
+    y = dt.year
+    m = dt.month
+    d = dt.day
+    return gregorian_to_jalali(y,m,d)
+
+def jalali_timedelta(y,m,d,delta_num):
+    dt = jalali_to_datetime(y,m,d)
+    dt_delta = dt + timedelta(days=delta_num)
+    jalai_of_dt = datetime_to_jalali(dt_delta)
+    return jalai_of_dt
 
 
 def get_last_day_in_jalali(month_number, year):
@@ -101,3 +115,5 @@ def return_day_names(jalali_year, jalali_month):
     first_of_month = greg_to_datetime(first_y, first_m, first_d)
     end_of_month = greg_to_datetime(end_y, end_m, end_d)
     return dates_between_as_name(first_of_month, end_of_month)
+
+

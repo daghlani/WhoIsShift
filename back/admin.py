@@ -1,5 +1,5 @@
 from django.contrib import admin
-from back.models import ShiftGroup, FileObj, ExcelColumns, Profile, Shift
+from back.models import ShiftGroup, FileObj, ExcelColumns, Profile, Shift, Tuesday, Thursday, Friday, ShiftDay
 
 
 class FileObjAdmin(admin.ModelAdmin):
@@ -25,9 +25,25 @@ class ShiftAdmin(admin.ModelAdmin):
     list_filter = ('group',)
 
 
+class ShiftDayAdmin(admin.ModelAdmin):
+    list_display = ('id', 'type', 'j_year_num', 'j_month_num', 'j_day_num', 'group', 'night_people_list')
+    readonly_fields = ('index_num', 'shift', 'group','type', 'j_year_num', 'j_month_num', 'j_day_num',)
+    search_fields = list_display
+    list_filter = ('group','type', 'j_year_num', 'j_month_num')
+
+
+class SpecialDayAdmin(admin.ModelAdmin):
+    list_display = ('group','people_list')
+    readonly_fields = ('group',)
+
+
 # Register your models here.
 admin.site.register(Profile, ProfileAdmin)
 admin.site.register(ShiftGroup, ShiftGroupAdmin)
 admin.site.register(FileObj, FileObjAdmin)
 admin.site.register(ExcelColumns)
 admin.site.register(Shift, ShiftAdmin)
+admin.site.register(Tuesday, SpecialDayAdmin)
+admin.site.register(Thursday, SpecialDayAdmin)
+admin.site.register(Friday, SpecialDayAdmin)
+admin.site.register(ShiftDay, ShiftDayAdmin)

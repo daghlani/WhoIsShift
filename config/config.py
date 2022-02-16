@@ -16,11 +16,23 @@ class KeyValue:
     loading_title = 'لطفا منتظر بمانید...'
     file_name = 'نام فایل'
     group = 'گروه'
+    normal_req = 'حداقل نفر روز عادی'
+    tuesday_req = 'حداقل نفر سه‌شنبه'
+    thursday_req = 'حداقل نفر پنجشنبه'
+    friday_req = 'حداقل نفر جمعه'
+    row = 'ردیف'
+    type = 'روز'
+    date = 'تاریخ'
+    day = 'شیفت روز'
+    day_res = 'مسئول روز'
+    night = 'شیفت شب'
+    night_res = 'مسئول شب'
 
 
 class MonthNames:
     year = 'سال'
     month = 'ماه'
+    day = 'روز'
     FAR = 'فروردین'
     ORD = 'اردیبهشت'
     KHO = 'خرداد'

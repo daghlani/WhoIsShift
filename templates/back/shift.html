@@ -1,0 +1,38 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% block content %}
+    <link rel="stylesheet" href="{% static 'css/tables.css' %}">
+    <form method="post">{% csrf_token %}
+        {{ form.as_table }}
+        <input type="submit" value="{{ texts.submit }}">
+    </form>
+    <div class="table_me">
+        <table class="sortable table_me">
+            <thead>
+            <tr>
+                <th class="task_row">{{ texts.row }}</th>
+                <th class="task_row">{{ texts.type }}</th>
+                <th class="task_row">{{ texts.date }}</th>
+                <th class="task_row">{{ texts.day }}</th>
+                <th class="task_row">{{ texts.day_res }}</th>
+                <th class="task_row">{{ texts.night }}</th>
+                <th class="task_row">{{ texts.night_res }}</th>
+            </tr>
+            </thead>
+            {% for row in days %}
+                <tr>
+                    <td>{{ forloop.counter }}</a></td>
+                    <td>{{ row.type }}</a></td>
+                    <td>{{ row.j_year_num }} - {{ row.j_month_num }} - {{ row.j_day_num }}</a></td>
+                    <td>{{ row.day_people_list }}</a></td>
+                    <td>{{ row.day_responsible }}</a></td>
+                    <td>{{ row.night_people_list }}</a></td>
+                    <td>{{ row.night_responsible }}</a></td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    <script src="{% static 'js/sortable.js' %}"></script>
+{% endblock javascripts %}

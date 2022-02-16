@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django import template
 from django.contrib.auth.decorators import login_required
-from back.models import ShiftGroup, FileObj, ExcelColumns, Profile, Shift
+from back.models import ShiftGroup, FileObj, ExcelColumns, Profile, Shift, Tuesday, Thursday, Friday, ShiftDay
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 import pandas as pd
@@ -13,6 +13,7 @@ from tools.jalali import *
 from django.utils import timezone
 from django.urls import reverse
 from back.decorator import check_grp_owner
+from back.functions import *
 
 
 def glob_context():
@@ -158,6 +159,117 @@ def create_shift(request):
             form_obj.days_name = ','.join(list_of_days)
             form_obj.days_count = len(list_of_days)
             form_obj.save()
+            ################################################################################################
+            days_list = form_obj.days_name.split(',')
+            normal_limit_count = selected_group.normal_req
+            tuesday_limit_count = selected_group.tuesday_req
+            thursday_limit_count = selected_group.thursday_req
+            friday_limit_count = selected_group.friday_req
+            for ind,i in enumerate(days_list):
+                group_tuesday_list = get_special_list(Tuesday,selected_group,form_obj)
+                special_day_cal_(ind, i, 'Tuesday', tuesday_limit_count, group_tuesday_list, form_obj)
+                group_thursday_list = get_special_list(Thursday,selected_group,form_obj)
+                special_day_cal_(ind, i, 'Thursday', thursday_limit_count, group_thursday_list, form_obj)
+                group_friday_list = get_special_list(Friday,selected_group,form_obj)
+                special_day_cal_(ind, i, 'Friday', friday_limit_count   , group_friday_list, form_obj)
+                normal_day_cal_(ind, i, normal_limit_count, form_obj)
+            # for ind,i in enumerate(days_list):
+                # normal_day_cal_(ind, i, 3, form_obj)
+            ################################################################################################
+            # try:
+            #     group_tuesday_list = Tuesday.objects.get(group=selected_group).people_list.split(',')
+            #     print('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$tuesday model exist')
+            # except Tuesday.DoesNotExist:
+            #     print('model does not exist!!!!!!!!!!!!!!!!!!!11')
+            #     Tuesday.objects.create(group=selected_group,people_list=form_obj.people_list)
+            #     print('Tuesday object of group {} created!!!!!!!!!111'.format(selected_group))
+            #     group_tuesday_list = Tuesday.objects.get(group=selected_group).people_list.split(',')
+            # except Exception as err:
+            #     print(err)
+            # try:
+            #     group_thursday_list = Thursday.objects.get(group=selected_group).people_list.split(',')
+            #     print('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$thursday model exist')
+            # except Thursday.DoesNotExist:
+            #     print('model does not exist!!!!!!!!!!!!!!!!!!!11')
+            #     Thursday.objects.create(group=selected_group,people_list=form_obj.people_list)
+            #     print('Thursday object of group {} created!!!!!!!!!111'.format(selected_group))
+            #     group_thursday_list = Thursday.objects.get(group=selected_group).people_list.split(',')
+            # except Exception as err:
+            #     print(err)
+            # try:
+            #     group_friday_list = Friday.objects.get(group=selected_group).people_list.split(',')
+            #     print('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$Friday model exist')
+            # except Friday.DoesNotExist:
+            #     print('model does not exist!!!!!!!!!!!!!!!!!!!11')
+            #     Friday.objects.create(group=selected_group,people_list=form_obj.people_list)
+            #     print('Friday object of group {} created!!!!!!!!!111'.format(selected_group))
+            #     group_friday_list = Friday.objects.get(group=selected_group).people_list.split(',')
+            # except Exception as err:
+            #     print(err)
+                # if i == 'Tuesday':
+                #     group_shift_count = 5
+                #     i_people = []
+                #     for j in range(group_shift_count):
+                #         a = group_tuesday_list.pop(0)
+                #         i_people.append(a)
+                #         group_tuesday_list.append(a)
+                #     month_num = form_obj.j_month_num
+                #     year_num = form_obj.j_year_num
+                #     ShiftDay.objects.create(
+                #         shift = form_obj,
+                #         index_num = ind,
+                #         j_month_num = month_num,
+                #         j_year_num = year_num,
+                #         group = form_obj.group,
+                #         night_people_list = ','.join(i_people),
+                #         day_people_list = '',
+                #         type = 'Tuesday',
+                #         day_responsible = None,
+                #         night_responsible = None
+                #     )
+                # if i == 'Thursday':
+                #     group_shift_count = 2
+                #     i_people = []
+                #     for j in range(group_shift_count):
+                #         a = group_thursday_list.pop(0)
+                #         i_people.append(a)
+                #         group_thursday_list.append(a)
+                #     month_num = form_obj.j_month_num
+                #     year_num = form_obj.j_year_num
+                #     ShiftDay.objects.create(
+                #         shift = form_obj,
+                #         index_num = ind,
+                #         j_month_num = month_num,
+                #         j_year_num = year_num,
+                #         group = form_obj.group,
+                #         night_people_list = ','.join(i_people),
+                #         day_people_list = '',
+                #         type = 'Thursday',
+                #         day_responsible = None,
+                #         night_responsible = None
+                #     )
+                # if i == 'Friday':
+                #     group_shift_count = 1
+                #     i_people = []
+                #     for j in range(group_shift_count):
+                #         a = group_friday_list.pop(0)
+                #         i_people.append(a)
+                #         group_friday_list.append(a)
+                #     month_num = form_obj.j_month_num
+                #     year_num = form_obj.j_year_num
+                #     ShiftDay.objects.create(
+                #         shift = form_obj,
+                #         index_num = ind,
+                #         j_month_num = month_num,
+                #         j_year_num = year_num,
+                #         group = form_obj.group,
+                #         night_people_list = ','.join(i_people),
+                #         day_people_list = '',
+                #         type = 'Friday',
+                #         day_responsible = None,
+                #         night_responsible = None
+                #     )
+            ################################################################################################
             return redirect('/')
     else:
         form = ShiftForm()
@@ -167,3 +279,49 @@ def create_shift(request):
     context['texts'] = texts
     context['form'] = form
     return render(request, 'back/shift_create.html', context)
+
+
+
+def shift(request, grp_name):
+    context = glob_context()
+    jalali_now = get_jalali_now()
+    grp = ShiftGroup.objects.get(name=grp_name)
+    print(grp)
+    try:
+        selected_month = jalali_now[1]
+        selected_year = jalali_now[0]
+        form = DatePickerForm(initial={'month': selected_month, 'year': selected_year})
+        user = User.objects.get(username=request.user)
+        if request.method == 'POST':
+            form = DatePickerForm(request.POST)
+            if form.is_valid():
+                selected_month = form.cleaned_data['month']
+                selected_year = form.cleaned_data['year']
+        all_days = list(ShiftDay.objects.filter(group=grp,j_year_num=selected_year,j_month_num=selected_month).values(
+            'type',
+            'j_day_num',
+            'j_month_num',
+            'j_year_num',
+            'night_people_list',
+            'day_people_list',
+            'day_responsible',
+            'night_responsible'
+        ))
+        print(all_days)
+        context['days'] = all_days
+        texts = dict()
+        texts['row'] = KeyValue.row
+        texts['submit'] = KeyValue.submit
+        texts['row'] = KeyValue.row
+        texts['type'] = KeyValue.type
+        texts['date'] = KeyValue.date
+        texts['day'] = KeyValue.day
+        texts['day_res'] = KeyValue.day_res
+        texts['night'] = KeyValue.night
+        texts['night_res'] = KeyValue.night_res
+        context['texts'] = texts
+        context['form'] = form
+    except Exception as er:
+        print(er)
+    return render(request, 'back/shift.html', context)
+        
