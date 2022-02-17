@@ -110,7 +110,7 @@ class Shift(models.Model):
     days_name = models.TextField()
 
     def __str__(self):
-        return '{} - {} - {}'.format(str(self.group), str(self.j_year_num) ,str(self.j_month_num))
+        return '{} - {} - {}'.format(str(self.group), str(self.j_year_num), str(self.j_month_num))
 
 
 class ShiftDay(models.Model):

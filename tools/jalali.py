@@ -68,18 +68,21 @@ def j_leap_check(year):
 def greg_to_datetime(gy, gm, gd):
     return datetime.strptime('{}-{}-{}'.format(gy, gm, gd), "%Y-%m-%d")
 
-def jalali_to_datetime(y,m,d):
-    ls = jalali_to_gregorian(y,m,d)
-    return greg_to_datetime(ls[0],ls[1],ls[2])
+
+def jalali_to_datetime(y, m, d):
+    ls = jalali_to_gregorian(y, m, d)
+    return greg_to_datetime(ls[0], ls[1], ls[2])
+
 
 def datetime_to_jalali(dt):
     y = dt.year
     m = dt.month
     d = dt.day
-    return gregorian_to_jalali(y,m,d)
+    return gregorian_to_jalali(y, m, d)
 
-def jalali_timedelta(y,m,d,delta_num):
-    dt = jalali_to_datetime(y,m,d)
+
+def jalali_timedelta(y, m, d, delta_num):
+    dt = jalali_to_datetime(y, m, d)
     dt_delta = dt + timedelta(days=delta_num)
     jalai_of_dt = datetime_to_jalali(dt_delta)
     return jalai_of_dt
@@ -117,3 +120,11 @@ def return_day_names(jalali_year, jalali_month):
     return dates_between_as_name(first_of_month, end_of_month)
 
 
+def get_previous_month(y, m):
+    if m == 1:
+        mm = 12
+        yy = y - 1
+    else:
+        mm = m - 1
+        yy = y
+    return [yy, mm]

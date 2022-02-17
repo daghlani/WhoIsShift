@@ -27,13 +27,13 @@ class ShiftAdmin(admin.ModelAdmin):
 
 class ShiftDayAdmin(admin.ModelAdmin):
     list_display = ('id', 'type', 'j_year_num', 'j_month_num', 'j_day_num', 'group', 'night_people_list')
-    readonly_fields = ('index_num', 'shift', 'group','type', 'j_year_num', 'j_month_num', 'j_day_num',)
+    readonly_fields = ('index_num', 'shift', 'group', 'type', 'j_year_num', 'j_month_num', 'j_day_num',)
     search_fields = list_display
-    list_filter = ('group','type', 'j_year_num', 'j_month_num')
+    list_filter = ('group', 'type', 'j_year_num', 'j_month_num')
 
 
 class SpecialDayAdmin(admin.ModelAdmin):
-    list_display = ('group','people_list')
+    list_display = ('group', 'people_list')
     readonly_fields = ('group',)
 
 

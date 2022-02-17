@@ -4,7 +4,7 @@ Copyright (c) 2019 - present AppSeed.us
 """
 
 from django.urls import path, re_path
-from back.views import home, excel, files, file_add, create_shift, shift #, file_edit
+from back.views import home, excel, files, file_add, create_shift, shift  # , file_edit
 from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
@@ -16,5 +16,3 @@ urlpatterns = [
     path('shift/<grp_name>', shift, name="shift"),
     # path('file_edit/<file_pk>', file_edit, name="file_edit"),
 ]
-
-
