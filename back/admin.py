@@ -19,6 +19,10 @@ class ProfileAdmin(admin.ModelAdmin):
     search_fields = list_display
     list_filter = ('group', 'in_shift',)
 
+    @admin.display(description='PROFILE IMAGE')
+    def image_tag(self, obj):
+        return obj.image_tag()
+
 
 class ShiftAdmin(admin.ModelAdmin):
     list_display = ('group', 'j_year_num', 'j_month_num')
