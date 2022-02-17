@@ -1,6 +1,8 @@
 from django.contrib import admin
 from back.models import ShiftGroup, FileObj, ExcelColumns, Profile, Shift, Tuesday, Thursday, Friday, ShiftDay
-
+# from  django.contrib.auth.models  import  Group  # new
+# #...
+# admin.site.unregister(Group)  # new
 
 class FileObjAdmin(admin.ModelAdmin):
     list_display = ('__str__', 'group_owner',)
@@ -13,7 +15,7 @@ class ShiftGroupAdmin(admin.ModelAdmin):
 
 
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'group', 'in_shift', 'in_night_shift', 'in_day_shift')
+    list_display = ('image_tag', 'user', 'group', 'in_shift', 'in_night_shift', 'in_day_shift')
     search_fields = list_display
     list_filter = ('group', 'in_shift',)
 

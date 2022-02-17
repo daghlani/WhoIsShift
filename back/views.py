@@ -14,6 +14,7 @@ from django.utils import timezone
 from django.urls import reverse
 from back.decorator import check_grp_owner
 from back.functions import *
+# from back.logger import logger
 
 
 def glob_context():
@@ -146,7 +147,7 @@ def create_shift(request):
             selected_year = form.cleaned_data['j_year_num']
             selected_group = form.cleaned_data['group']
             previous_month = get_previous_month(selected_year, selected_month)
-            if Shift.objects.all().exists():
+            if Shift.objects.filter(group=selected_group).exists():
                 if not Shift.objects.filter(group=selected_group, j_month_num=previous_month[1],
                                             j_year_num=previous_month[0]).exists():
                     printer('Selected date ({}-{}) is incorrect. there isn\'t previous month of your choice.'.format(
