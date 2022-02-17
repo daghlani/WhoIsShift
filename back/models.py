@@ -19,6 +19,7 @@ class ShiftGroup(models.Model):
     tuesday_req = models.IntegerField(verbose_name=KeyValue.tuesday_req, default=3)
     thursday_req = models.IntegerField(verbose_name=KeyValue.thursday_req, default=2)
     friday_req = models.IntegerField(verbose_name=KeyValue.friday_req, default=1)
+    shift_count_limit = models.IntegerField(verbose_name=KeyValue.shift_count_limit, default=5)
 
     def __str__(self):
         return str(self.name)
@@ -32,6 +33,7 @@ class Profile(models.Model):
     in_day_shift = models.BooleanField(default=True)
     avatar = models.ImageField(default='default.jpg', upload_to='profile_images')
     bio = models.TextField(default='', blank=True)
+    shift_count = models.IntegerField(verbose_name=KeyValue.shift_count, default=0)
 
     def image_tag(self):
         return mark_safe('<img src="/media/%s" width="80" height="80" />' % self.avatar)
@@ -85,6 +87,7 @@ class FileObj(models.Model):
 class SpecialDay(models.Model):
     group = models.OneToOneField(ShiftGroup, on_delete=models.CASCADE, default=None)
     people_list = models.TextField(default=None)
+    back_people_list = models.TextField(default=None)
 
     class Meta:
         abstract = True  # Set this model as Abstract

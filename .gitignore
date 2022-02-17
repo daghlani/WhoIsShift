@@ -1,4 +1,7 @@
 *.pyc
 *.sqlite3
 *.log
+*.jpg
 *.xlsx
+
+!default.jpg

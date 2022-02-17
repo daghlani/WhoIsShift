@@ -1,6 +1,8 @@
-from back.models import ShiftDay
+from back.models import ShiftDay, Profile
 from back import models
+from django.db.models import F
 from tools.jalali import jalali_timedelta
+from back.logger import logger
 
 
 def printer(s, side_space=3, side_str=6, char='#'):
@@ -25,57 +27,49 @@ def get_class(kls):
     return getattr(models, kls)
 
 
-def check_last_n_days(y, m, d, group, name, n=2):
+def check_last_n_days(y, m, d, group, name, shift_count_num, n=2):
     print('name: ', name)
     counter = 0
+    if Profile.objects.get(user__username=name).shift_count >= shift_count_num:
+        return False
     while counter < n:
         counter += 1
-        # print('counter is : ', counter)
         delta_day = jalali_timedelta(y, m, d, -1 * counter)
-        # print(delta_day)
         try:
             obj_ = ShiftDay.objects.get(group=group, j_day_num=delta_day[2], j_month_num=delta_day[1],
                                         j_year_num=delta_day[0])
             night_people = obj_.night_people_list
             day_people = obj_.day_people_list
             if name in day_people or name in night_people:
-                # print("%s is in day_list: %s" % (name, day_people))
-                print(">>>>>>>>>>>>>>>>>>OR<<<<<<<<<<<<<<<<<<")
-                print("%s is in night_list: %s" % (name, night_people))
+                printer("%s is in night_list: %s" % (name, night_people))
                 return False
         except ShiftDay.DoesNotExist:
             continue
         except Exception as err:
-            # print(err)
+            logger.error(err)
             return False
     return True
 
 
-def special_day_cal_(ind, j, d_type, d_count, people_group_type_list, form_obj):
+def special_day_cal_(ind, j, d_type, d_count, group_shift_count, people_group_type_list, form_obj):
     if j == d_type:
         i_people = []
         unavailable_people = []
-        print('start people_group_type_list of {} is :-----------------{}---------------------'.format(d_type,
-                                                                                                       people_group_type_list))
+        y = form_obj.j_year_num
+        m = form_obj.j_month_num
+        d = ind + 1
+        group = form_obj.group
+        print('start people_group_type_list of {} is :-----------------{}---------------------'.format(
+            d_type, people_group_type_list))
         for _time in range(d_count):
-            # people_group_type_list = unavailable_people + people_group_type_list
-            # for pr_index, pr in enumerate(range(d_count)):
-            # print(pr_index)
-            y = form_obj.j_year_num
-            m = form_obj.j_month_num
-            d = ind + 1
-            group = form_obj.group
             print('people of day {} is: {}'.format(d_type, people_group_type_list))
-            # person = people_group_type_list[0]
-            # for any in people_group_type_list:
             while True:
                 print('using list is: ', people_group_type_list)
-                # person = any
                 person = people_group_type_list[0]
-                # print(y,m,d)
-                if check_last_n_days(y=y, m=m, d=d, group=group, name=person):
+                if check_last_n_days(y=y, m=m, d=d, group=group, name=person, shift_count_num=group_shift_count):
                     a = people_group_type_list.pop(0)
                     i_people.append(a)
+                    Profile.objects.filter(group=group, user__username=person).update(shift_count=F('shift_count') + 1)
                     people_group_type_list.append(a)
                     print(i_people)
                     break
@@ -113,23 +107,25 @@ def special_day_cal_(ind, j, d_type, d_count, people_group_type_list, form_obj):
         print(100 * '-')
 
 
-def normal_day_cal_(ind, j, d_count, form_obj):
+def normal_day_cal_(ind, j, d_count, group_shift_count, form_obj):
     if j not in ['Tuesday', 'Thursday', 'Friday']:
         people_list = form_obj.people_list.split(',')
         i_people = []
         unavailable_people = []
+        y = form_obj.j_year_num
+        m = form_obj.j_month_num
+        d = ind + 1
+        group = form_obj.group
         print('start people_list is :-----------------{}---------------------'.format(people_list))
         for _time in range(d_count):
-            y = form_obj.j_year_num
-            m = form_obj.j_month_num
-            d = ind + 1
-            group = form_obj.group
+
             while True:
                 print('using list is: ', people_list)
                 person = people_list[0]
-                if check_last_n_days(y=y, m=m, d=d, group=group, name=person):
+                if check_last_n_days(y=y, m=m, d=d, group=group, name=person, shift_count_num=group_shift_count):
                     a = people_list.pop(0)
                     i_people.append(a)
+                    Profile.objects.filter(group=group, user__username=person).update(shift_count=F('shift_count') + 1)
                     people_list.append(a)
                     print(i_people)
                     break
@@ -160,14 +156,24 @@ def normal_day_cal_(ind, j, d_count, form_obj):
         shift_obj_.save()
 
 
-def get_special_list(model, selected_group, form_obj):
+def get_special_list(model, _group, form_obj):
     try:
-        group_list = model.objects.get(group=selected_group).people_list.split(',')
+        group_list = model.objects.get(group=_group).people_list.split(',')
     # except model.DoesNotExist:
     except Exception as err:
-        print(err)
+        logger.error(err)
         print('probably model does not exist!!!!!!!!!!!!!!!!!!!')
-        model.objects.create(group=selected_group, people_list=form_obj.people_list)
-        print('{} object of group {} created!!!!!!!!!!!!!!!!!!'.format(model, selected_group))
-        group_list = model.objects.get(group=selected_group).people_list.split(',')
+        model.objects.create(group=_group, people_list=form_obj.people_list, back_people_list=form_obj.people_list)
+        print('{} object of group {} created!!!!!!!!!!!!!!!!!!'.format(model, _group))
+        group_list = model.objects.get(group=_group).people_list.split(',')
     return group_list
+
+
+def update_special_day_backup(group, model):
+    try:
+        group_sp_day = model.objects.get(group=group)
+        people_ = group_sp_day.people_list
+        group_sp_day.back_people_list = people_
+        group_sp_day.save()
+    except model.DoesNotExist as err:
+        logger.error(err)

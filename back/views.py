@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from back.models import ShiftGroup, FileObj, ExcelColumns, Profile, Shift, Tuesday, Thursday, Friday, ShiftDay
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
+from django.db.models import Q, Sum, F
 import pandas as pd
 import numpy as np
 from config.config import *
@@ -14,6 +15,8 @@ from django.utils import timezone
 from django.urls import reverse
 from back.decorator import check_grp_owner
 from back.functions import *
+
+
 # from back.logger import logger
 
 
@@ -173,14 +176,25 @@ def create_shift(request):
             tuesday_limit_count = selected_group.tuesday_req
             thursday_limit_count = selected_group.thursday_req
             friday_limit_count = selected_group.friday_req
+            shift_count_limit_count = selected_group.shift_count_limit
+
+            Profile.objects.filter(group=form_obj.group).update(shift_count=0)
+
+            update_special_day_backup(selected_group, Tuesday)
+            update_special_day_backup(selected_group, Thursday)
+            update_special_day_backup(selected_group, Friday)
+
             for ind, i in enumerate(days_list):
                 group_tuesday_list = get_special_list(Tuesday, selected_group, form_obj)
-                special_day_cal_(ind, i, 'Tuesday', tuesday_limit_count, group_tuesday_list, form_obj)
+                special_day_cal_(ind, i, 'Tuesday', tuesday_limit_count, shift_count_limit_count, group_tuesday_list,
+                                 form_obj)
                 group_thursday_list = get_special_list(Thursday, selected_group, form_obj)
-                special_day_cal_(ind, i, 'Thursday', thursday_limit_count, group_thursday_list, form_obj)
+                special_day_cal_(ind, i, 'Thursday', thursday_limit_count, shift_count_limit_count, group_thursday_list,
+                                 form_obj)
                 group_friday_list = get_special_list(Friday, selected_group, form_obj)
-                special_day_cal_(ind, i, 'Friday', friday_limit_count, group_friday_list, form_obj)
-                normal_day_cal_(ind, i, normal_limit_count, form_obj)
+                special_day_cal_(ind, i, 'Friday', friday_limit_count, shift_count_limit_count, group_friday_list,
+                                 form_obj)
+                normal_day_cal_(ind, i, normal_limit_count, shift_count_limit_count, form_obj)
             # for ind,i in enumerate(days_list):
             # normal_day_cal_(ind, i, 3, form_obj)
             ################################################################################################

@@ -15,9 +15,10 @@ class ShiftGroupAdmin(admin.ModelAdmin):
 
 
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ('image_tag', 'user', 'group', 'in_shift', 'in_night_shift', 'in_day_shift')
+    list_display = ('image_tag', 'user', 'group', 'shift_count', 'in_shift', 'in_night_shift', 'in_day_shift')
     search_fields = list_display
-    list_filter = ('group', 'in_shift',)
+    readonly_fields = ('shift_count',)
+    list_filter = ('group', 'in_shift','shift_count',)
 
     @admin.display(description='PROFILE IMAGE')
     def image_tag(self, obj):
