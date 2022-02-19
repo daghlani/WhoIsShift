@@ -1,5 +1,5 @@
 from django import forms
-from config.config import MonthNames
+from config.config import MonthNames, KeyValue
 from back.models import FileObj, Shift
 
 
@@ -24,6 +24,14 @@ class FileEditForm(forms.ModelForm):
 
 
 class ShiftForm(forms.ModelForm):
+    
+    uncommon_holiday = forms.MultipleChoiceField(
+        label=KeyValue.uncommon_holiday,
+        choices=MonthNames.JALALI_DAY_CHOICES,
+        required=False
+    )
+
     class Meta:
         model = Shift
-        exclude = ('days_count', 'days_name', 'people_list',)
+        exclude = ('days_count', 'days_name', 'people_list','uncommon_holiday',)
+    

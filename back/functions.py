@@ -51,7 +51,7 @@ def check_last_n_days(y, m, d, group, name, shift_count_num, n=2):
     return True
 
 
-def special_day_cal_(ind, j, d_type, d_count, group_shift_count, people_group_type_list, form_obj):
+def special_day_cal_(ind, j, d_type, d_count, group_shift_count, people_group_type_list, form_obj,u_holiday_days=None,u_holiday=None):
     if j == d_type:
         i_people = []
         unavailable_people = []
@@ -59,28 +59,34 @@ def special_day_cal_(ind, j, d_type, d_count, group_shift_count, people_group_ty
         m = form_obj.j_month_num
         d = ind + 1
         group = form_obj.group
-        print('start people_group_type_list of {} is :-----------------{}---------------------'.format(
-            d_type, people_group_type_list))
+        if u_holiday is not None and u_holiday_days is not None:
+            print('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
+            print(d,u_holiday, u_holiday_days)
+            if str(d) in u_holiday_days:
+                d_count = u_holiday
+                print('d_count is: ', d_count)        
+        print('d_count is: ', d_count)
+        # print('start people_group_type_list of {} is :-----------------{}---------------------'.format(d_type, people_group_type_list))
         for _time in range(d_count):
-            print('people of day {} is: {}'.format(d_type, people_group_type_list))
+            # print('people of day {} is: {}'.format(d_type, people_group_type_list))
             while True:
-                print('using list is: ', people_group_type_list)
+                # print('using list is: ', people_group_type_list)
                 person = people_group_type_list[0]
                 if check_last_n_days(y=y, m=m, d=d, group=group, name=person, shift_count_num=group_shift_count):
                     a = people_group_type_list.pop(0)
                     i_people.append(a)
                     Profile.objects.filter(group=group, user__username=person).update(shift_count=F('shift_count') + 1)
                     people_group_type_list.append(a)
-                    print(i_people)
+                    # print(i_people)
                     break
                 else:
-                    print('changing list......')
-                    print('list was: ', people_group_type_list)
+                    # print('changing list......')
+                    # print('list was: ', people_group_type_list)
                     # index_changer(0,1,people_group_type_list)
                     u = people_group_type_list.pop(0)
                     unavailable_people.append(u)
-                    print('unavailable_people list is: ', unavailable_people)
-                    print('now list is: ', people_group_type_list)
+                    # print('unavailable_people list is: ', unavailable_people)
+                    # print('now list is: ', people_group_type_list)
                     continue
         people_group_type_list = unavailable_people + people_group_type_list
         ShiftDay.objects.create(
@@ -96,18 +102,18 @@ def special_day_cal_(ind, j, d_type, d_count, group_shift_count, people_group_ty
             day_responsible=None,
             night_responsible=None
         )
-        print('______________________________________________________')
-        print('finally list is: ', people_group_type_list)
-        print('______________________________________________________')
-        print('Updating {} record of {} ....'.format(d_type, group))
+        # print('______________________________________________________')
+        # print('finally list is: ', people_group_type_list)
+        # print('______________________________________________________')
+        # print('Updating {} record of {} ....'.format(d_type, group))
         type_obj_ = get_class(d_type).objects.get(group=form_obj.group)
         type_obj_.people_list = ','.join(people_group_type_list)
         type_obj_.save()
-        print('Updating {} record of {} Done'.format(d_type, group))
-        print(100 * '-')
+        # print('Updating {} record of {} Done'.format(d_type, group))
+        # print(100 * '-')
 
 
-def normal_day_cal_(ind, j, d_count, group_shift_count, form_obj):
+def normal_day_cal_(ind, j, d_count, group_shift_count, form_obj,u_holiday_days=None,u_holiday=None):
     if j not in ['Tuesday', 'Thursday', 'Friday']:
         people_list = form_obj.people_list.split(',')
         i_people = []
@@ -116,26 +122,33 @@ def normal_day_cal_(ind, j, d_count, group_shift_count, form_obj):
         m = form_obj.j_month_num
         d = ind + 1
         group = form_obj.group
-        print('start people_list is :-----------------{}---------------------'.format(people_list))
+        if u_holiday is not None and u_holiday_days is not None:
+            print('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
+            print(d,u_holiday, u_holiday_days)
+            if str(d) in u_holiday_days:
+                d_count = u_holiday
+                print('d_count is: ', d_count)        
+        print('d_count is: ', d_count)
+        # print('start people_list is :-----------------{}---------------------'.format(people_list))
         for _time in range(d_count):
 
             while True:
-                print('using list is: ', people_list)
+                # print('using list is: ', people_list)
                 person = people_list[0]
                 if check_last_n_days(y=y, m=m, d=d, group=group, name=person, shift_count_num=group_shift_count):
                     a = people_list.pop(0)
                     i_people.append(a)
                     Profile.objects.filter(group=group, user__username=person).update(shift_count=F('shift_count') + 1)
                     people_list.append(a)
-                    print(i_people)
+                    # print(i_people)
                     break
                 else:
-                    print('changing list......')
-                    print('list was: ', people_list)
+                    # print('changing list......')
+                    # print('list was: ', people_list)
                     u = people_list.pop(0)
                     unavailable_people.append(u)
-                    print('unavailable_people list is: ', unavailable_people)
-                    print('now list is: ', people_list)
+                    # print('unavailable_people list is: ', unavailable_people)
+                    # print('now list is: ', people_list)
                     continue
         people_list = unavailable_people + people_list
         ShiftDay.objects.create(

@@ -19,6 +19,7 @@ class ShiftGroup(models.Model):
     tuesday_req = models.IntegerField(verbose_name=KeyValue.tuesday_req, default=3)
     thursday_req = models.IntegerField(verbose_name=KeyValue.thursday_req, default=2)
     friday_req = models.IntegerField(verbose_name=KeyValue.friday_req, default=1)
+    uncommon_holiday_req = models.IntegerField(verbose_name=KeyValue.uncommon_holiday_req, default=1)
     shift_count_limit = models.IntegerField(verbose_name=KeyValue.shift_count_limit, default=5)
 
     def __str__(self):
@@ -27,6 +28,8 @@ class ShiftGroup(models.Model):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=20, default=' ')
+    last_name = models.CharField(max_length=30, default=' ')
     group = models.ForeignKey(ShiftGroup, on_delete=models.CASCADE, default=None)
     in_shift = models.BooleanField(default=True)
     in_night_shift = models.BooleanField(default=True)
@@ -115,6 +118,11 @@ class Shift(models.Model):
     people_list = models.TextField()
     days_count = models.IntegerField()
     days_name = models.TextField()
+    uncommon_holiday = models.TextField(blank=True, null=True)
+    # uncommon_holiday = model.MultipleChoiceField(
+    #     label=KeyValue.uncommon_holiday,
+    #     choices=Employee.objects.filter(is_active=True).values_list('jira_id', 'jira_id')
+    # )
 
     def __str__(self):
         return '{} - {} - {}'.format(str(self.group), str(self.j_year_num), str(self.j_month_num))
@@ -128,7 +136,9 @@ class ShiftDay(models.Model):
     j_year_num = models.IntegerField(verbose_name=MonthNames.year)
     group = models.ForeignKey(ShiftGroup, on_delete=models.CASCADE)
     night_people_list = models.TextField()
-    day_people_list = models.TextField()
+    night_pr_people_list = models.TextField()
+    day_people_list = models.TextField(null=True, blank=True)
+    day_pr_people_list = models.TextField(null=True, blank=True)
     type = models.CharField(max_length=20)
     day_responsible = models.CharField(max_length=30, default=None, null=True)
     night_responsible = models.CharField(max_length=30, default=None, null=True)

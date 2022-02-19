@@ -148,6 +148,7 @@ def create_shift(request):
         if form.is_valid():
             selected_month = form.cleaned_data['j_month_num']
             selected_year = form.cleaned_data['j_year_num']
+            selected_uncommon_holiday = form.cleaned_data['uncommon_holiday']
             selected_group = form.cleaned_data['group']
             previous_month = get_previous_month(selected_year, selected_month)
             if Shift.objects.filter(group=selected_group).exists():
@@ -176,6 +177,7 @@ def create_shift(request):
             tuesday_limit_count = selected_group.tuesday_req
             thursday_limit_count = selected_group.thursday_req
             friday_limit_count = selected_group.friday_req
+            uncommon_holiday_limit_count = selected_group.uncommon_holiday_req
             shift_count_limit_count = selected_group.shift_count_limit
 
             Profile.objects.filter(group=form_obj.group).update(shift_count=0)
@@ -187,16 +189,24 @@ def create_shift(request):
             for ind, i in enumerate(days_list):
                 group_tuesday_list = get_special_list(Tuesday, selected_group, form_obj)
                 special_day_cal_(ind, i, 'Tuesday', tuesday_limit_count, shift_count_limit_count, group_tuesday_list,
-                                 form_obj)
+                                 form_obj,u_holiday_days=selected_uncommon_holiday,u_holiday=uncommon_holiday_limit_count)
                 group_thursday_list = get_special_list(Thursday, selected_group, form_obj)
                 special_day_cal_(ind, i, 'Thursday', thursday_limit_count, shift_count_limit_count, group_thursday_list,
-                                 form_obj)
+                                 form_obj,u_holiday_days=selected_uncommon_holiday,u_holiday=uncommon_holiday_limit_count)
                 group_friday_list = get_special_list(Friday, selected_group, form_obj)
                 special_day_cal_(ind, i, 'Friday', friday_limit_count, shift_count_limit_count, group_friday_list,
                                  form_obj)
-                normal_day_cal_(ind, i, normal_limit_count, shift_count_limit_count, form_obj)
+                normal_day_cal_(ind, i, normal_limit_count, shift_count_limit_count, form_obj,
+                                    u_holiday_days=selected_uncommon_holiday,u_holiday=uncommon_holiday_limit_count)
             # for ind,i in enumerate(days_list):
             # normal_day_cal_(ind, i, 3, form_obj)
+            all_days_of_month = ShiftDay.objects.filter(group=form_obj.group, j_month_num=selected_month,j_year_num=selected_year)
+            for day in all_days_of_month:
+                persian_list= []
+                for pr in day.night_people_list.split(','):
+                    persian_list.append(Profile.objects.get(user__username=pr).last_name)
+                day.night_pr_people_list = ','.join(persian_list)
+                day.save()
             ################################################################################################
             return redirect('/')
     else:
@@ -218,7 +228,7 @@ def shift(request, grp_name):
         selected_month = jalali_now[1]
         selected_year = jalali_now[0]
         form = DatePickerForm(initial={'month': selected_month, 'year': selected_year})
-        user = User.objects.get(username=request.user)
+        # user = User.objects.get(username=request.user)
         if request.method == 'POST':
             form = DatePickerForm(request.POST)
             if form.is_valid():
@@ -243,5 +253,10 @@ def shift(request, grp_name):
         context['texts'] = texts
         context['form'] = form
     except Exception as er:
+        print('aaaaaaaaaaa')
         print(er)
     return render(request, 'back/shift.html', context)
+
+
+# ToDo handle minimum number of shift for any body
+# ToDo handle uncommon holidays of month

@@ -24,7 +24,15 @@
     padding-top: 12px;
     padding-bottom: 12px;
     text-align: center;
-    background-color: #287fe5;
+    background-color: #16ab01;
     color: white;
     border-radius: 0px;
+}
+
+.friday_row {
+    background-color: #b10000;
+}
+
+.thursday_row {
+    background-color: #de991c;
 }

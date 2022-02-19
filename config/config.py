@@ -9,17 +9,30 @@ night_operator = {'en': 'night_operator', 'fa': 'شیفت شب'}
 # default_excel_presence_columns = [days_of_week['fa'], date['fa'], day_operator['fa'], night_operator['fa']]
 
 
+WEEK_MAP = dict(
+    Saturday='شنبه',
+    Sunday='یکشنبه',
+    Monday='دوشنبه',
+    Tuesday='سه‌شنبه',
+    Wednesday='چهارشنبه',
+    Thursday='پنجشبنه',
+    Friday='جمعه',
+)
+
+
 class KeyValue:
     row = 'ردیف'
     submit = 'ارسال'
     shift_num = 'تلفن شیفت'
     loading_title = 'لطفا منتظر بمانید...'
+    uncommon_holiday = 'تعطیلات رسمی'
     file_name = 'نام فایل'
     group = 'گروه'
     normal_req = 'حداقل نفر روز عادی'
     tuesday_req = 'حداقل نفر سه‌شنبه'
     thursday_req = 'حداقل نفر پنجشنبه'
     friday_req = 'حداقل نفر جمعه'
+    uncommon_holiday_req = 'حداقل نفر در تعطیلات رسمی'
     shift_count_limit = 'تعداد شیفت در ماه'
     shift_count = 'تعداد شیفت'
     type = 'روز'
@@ -62,3 +75,7 @@ class MonthNames:
     JALALI_YEAR_CHOICES = []
     for r in range(first_year_of_lunch, (first_year_of_lunch + year_range)):
         JALALI_YEAR_CHOICES.append((r, r))
+
+    JALALI_DAY_CHOICES = []
+    for r in range(1,32):
+        JALALI_DAY_CHOICES.append((r, r))

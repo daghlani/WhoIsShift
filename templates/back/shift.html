@@ -1,5 +1,6 @@
 {% extends 'layouts/base.html' %}
 {% load static %}
+{% load custom_tags %}
 {% block content %}
     <link rel="stylesheet" href="{% static 'css/tables.css' %}">
     <form method="post">{% csrf_token %}
@@ -20,10 +21,10 @@
             </tr>
             </thead>
             {% for row in days %}
-                <tr>
-                    <td>{{ forloop.counter }}</a></td>
-                    <td>{{ row.type }}</a></td>
-                    <td>{{ row.j_year_num }} - {{ row.j_month_num }} - {{ row.j_day_num }}</a></td>
+                <tr {% if row.type == "Friday" %}style="background-color: #b10000;"{% elif row.type == "Thursday" %}style="background-color: #de991c;"{% endif %}>
+                    <td>{{ forloop.counter|l10n_num:"fa" }}</a></td>
+                    <td>{{ row.type|weekd:"fa" }}</a></td>
+                    <td>{{ row.j_year_num|l10n_num:"fa" }} - {{ row.j_month_num|l10n_num:"fa" }} - {{ row.j_day_num|l10n_num:"fa" }}</a></td>
                     <td>{{ row.day_people_list }}</a></td>
                     <td>{{ row.day_responsible }}</a></td>
                     <td>{{ row.night_people_list }}</a></td>
