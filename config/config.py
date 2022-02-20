@@ -21,6 +21,7 @@ WEEK_MAP = dict(
 
 
 class KeyValue:
+    j_date_t = 'امروز'
     row = 'ردیف'
     submit = 'ارسال'
     shift_num = 'تلفن شیفت'

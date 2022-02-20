@@ -1,19 +1,21 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
         "http://www.w3.org/TR/html4/loose.dtd">
 {% load static %}
+{% include 'layouts/time.html' %} 
+<link rel="icon"href="{% static 'favicon.ico' %}">
 {% load custom_tags %}
 
-{% current_date_persian %}
-<html>
+<h3 dir="rtl">{{ j_date_t }}: {% current_date_persian %} -- <span id='ct5'></span></h3>
+
 <div id="wait" dir="rtl">
     {% include 'layouts/loading.html' %}
     <p>{{ loading_title }}</p>
 </div>
 <head>
-    <title>SK</title>
-    {#    <link rel="stylesheet" href="/static/css/global.css?{% now 'u' %}">#}
-    <link rel="stylesheet" href="{% static 'css/loading.css' %}">
-    <link rel="stylesheet" href="{% static 'css/global.css' %}">
+    <title>{% block title %}SK{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/loading.css' %}?{% now 'u' %}">
+    <link rel="stylesheet" href="{% static 'css/global.css' %}?{% now 'u' %}">
+    {% block style %}{% endblock style %}
 </head>
 <body>
 <div class="base-head">

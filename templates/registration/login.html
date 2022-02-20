@@ -1,0 +1,42 @@
+{% extends 'layouts/base.html' %}
+{% block title %}Login{% endblock %}
+{% load static %}
+{% block style %}
+    <link rel="stylesheet" href="{% static 'css/login/login.css' %}?{% now 'u' %}">
+    <link rel="stylesheet" href="{% static 'css/login/all.min.css' %}?{% now 'u' %}">
+    <!-- <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet"> -->
+{% endblock style %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Design by foolishdeveloper.com -->
+    <div class="background">
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+    <form dir="rtl" id="login-form" method="post" action="{% url 'login' %}">
+        {% csrf_token %}
+        <h3>وارد شوید</h3>
+
+        <label for="username">نام کاربری</label>
+        <input id="id_username" name="username" type="text" class="form-control">
+
+        <label for="password">گذرواژه</label>
+        <input id="id_password" name="password" type="password" class="form-control">
+        {% if form.errors %}
+            <p style="margin-bottom: -40px">
+                Your username and password didn't match. 
+                Please try again.
+            </p>
+        {% endif %}
+        <button>
+        <input class="sub_input" type="submit" value="ورود"/>
+        </button>
+        <input type="hidden" name="next" value="{{ next }}" />
+        <div dir="ltr" class="social">
+            <a href="{% url 'home' %}" style="text-decoration: none; display: none;"><div class="go"></i>Home</div></a>
+            <a href="{% url 'home' %}" style="text-decoration: none;"><div class="fb"></i>خانه</div></a>
+        </div>
+    </form>
+{% endblock content %}

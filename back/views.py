@@ -23,6 +23,7 @@ from back.functions import *
 def glob_context():
     ctx = dict()
     ctx['loading_title'] = KeyValue.loading_title
+    ctx['j_date_t'] = KeyValue.j_date_t
     return ctx
 
 
@@ -43,8 +44,9 @@ def read_excel_column(filepath):
 
 
 def home(request):
+    context = glob_context()
     groups = ShiftGroup.objects.all()
-    context = {'groups': groups}
+    context['groups'] = groups
     html_template = loader.get_template('home/index.html')
     return HttpResponse(html_template.render(context, request))
 

@@ -5,7 +5,7 @@ body {
     /*background: #222D32;*/
     color: #f6f6f6;
     font-family: 'shabnam', Arial, sans-serif;
-    background-image: radial-gradient(circle farthest-corner at center, #3C4B57 0%, #1C262B 100%);
+    background-image: radial-gradient(circle farthest-corner at center, #111314 0%, #1C262B 100%);
 }
 
 #head-title {
@@ -16,4 +16,8 @@ body {
 #head-link {
     color: white;
     text-decoration: none;
+}
+
+.date-picker-form * {
+    font-family: 'shabnam', Arial, sans-serif;
 }

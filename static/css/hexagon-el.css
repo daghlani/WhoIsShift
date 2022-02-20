@@ -31,7 +31,7 @@
 	position: absolute;
 	top: 0; left: 0;
 	width: 100%; height: 100%;
-	background: #072338e6;
+	background: #343434e6;
 	transform: skewY(-30deg) rotate(60deg);
 	overflow: hidden;
 }

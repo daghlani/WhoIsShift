@@ -22,6 +22,11 @@ class ShiftGroup(models.Model):
     uncommon_holiday_req = models.IntegerField(verbose_name=KeyValue.uncommon_holiday_req, default=1)
     shift_count_limit = models.IntegerField(verbose_name=KeyValue.shift_count_limit, default=5)
 
+    class Meta:
+        permissions = (
+            ("can_see_management", "can_see_management"),
+        )
+
     def __str__(self):
         return str(self.name)
 

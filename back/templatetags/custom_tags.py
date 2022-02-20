@@ -16,7 +16,7 @@ def current_time(format_string):
 @register.simple_tag
 def current_date_persian():
     a = datetime_to_jalali(datetime.now())
-    return eng_to_persian_number("{}-{}-{}".format(a[0],a[1],a[2]))
+    return eng_to_persian_number("{}/{}/{}".format(a[2],a[1],a[0]))
 
 
 # Filter => {{week_day|weekd:"fa"}} or {{week_day|weekd:"en"}}

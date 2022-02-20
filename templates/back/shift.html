@@ -3,7 +3,7 @@
 {% load custom_tags %}
 {% block content %}
     <link rel="stylesheet" href="{% static 'css/tables.css' %}">
-    <form method="post">{% csrf_token %}
+    <form class="date-picker-form" method="post">{% csrf_token %}
         {{ form.as_table }}
         <input type="submit" value="{{ texts.submit }}">
     </form>

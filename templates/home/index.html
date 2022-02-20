@@ -1,7 +1,7 @@
 {% extends 'layouts/base.html' %}
 {% load static %}
 {% block content %}
-    <link rel="stylesheet" href="{% static "css/hexagon-el.css" %}">
+    <link rel="stylesheet" href="{% static 'css/hexagon-el.css' %}?{% now 'u' %}">
     <ul id="grid" class="clear">
         {% for gr in groups %}
             <li>
@@ -10,10 +10,12 @@
                 </a>
             </li>
         {% endfor %}
-	<li>
-             <a class="hexagon-link" href="/admin">
-		<div class="hexagon" style="background: #38070ce6;"><h1 style="margin: 50% auto; text-align: center">Managements</h1></div>
-             </a>
-        </li>
+        {% if perms.back.can_see_management %}
+            <li>
+                <a class="hexagon-link" href="/admin">
+                    <div class="hexagon" style="background: #38070ce6;"><h1 style="margin: 50% auto; text-align: center">Managements</h1></div>
+                </a>
+            </li>
+        {% endif %}
     </ul>
 {% endblock content %}
