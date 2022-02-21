@@ -1,14 +1,15 @@
 
 #grid {
-	position: relative;
-	margin: 0 auto; padding: 0;
-	width: 60%;
+    position: relative;
+    margin: 0 auto;
+    padding: 0;
+    width: 40%;
 }
 
 .clear:after {
-	content: "";
-	display: block;
-	clear: both;
+    content: "";
+    display: block;
+    clear: both;
 }
 
 #grid li {
@@ -23,32 +24,54 @@
 	list-style-type: none;
 }
 
+/*#grid li {*/
+/*    position: relative;*/
+/*    float: left;*/
+/*    padding: 0 0 19.167601% 0;*/
+/*    width: 16.857143%;*/
+/*    overflow: hidden;*/
+/*    visibility: hidden;*/
+/*    transform: rotate(-60deg) skewY(30deg);*/
+/*    !* 	background: #fd005f; *!*/
+/*    list-style-type: none;*/
+/*}*/
+
+
 #grid li * {
-	visibility: visible;
+    visibility: visible;
 }
 
 #grid li .hexagon {
-	position: absolute;
-	top: 0; left: 0;
-	width: 100%; height: 100%;
-	background: #343434e6;
-	transform: skewY(-30deg) rotate(60deg);
-	overflow: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #343434e6;
+    transform: skewY(-30deg) rotate(60deg);
+    overflow: hidden;
 }
 
 #grid li:nth-child(3n+2) {
-  margin: 0 1%;
+    margin: 0 1%;
 }
+
 #grid li:nth-child(6n+4), #grid li:nth-child(6n+5), #grid li:nth-child(6n+6) {
-	margin-top: -6.9285714285%;
-	margin-bottom: -6.9285714285%;
-	transform: translateX(50%) rotate(-60deg) skewY(30deg);
+    margin-top: -6.9285714285%;
+    margin-bottom: -6.9285714285%;
+    transform: translateX(50%) rotate(-60deg) skewY(30deg);
 }
+
 #grid li:nth-child(6n+4) {
 	margin-left: 0.5%;
 }
 
+/*#grid li:nth-child(6n+4) {*/
+/*    margin-left: -52.2%;*/
+/*    margin-top: 15.3%;*/
+/*}*/
+
 /*########################################################## Costume CSS*/
 .hexagon-link {
-	color: #ff0000;
+    color: #ff0000;
 }

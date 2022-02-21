@@ -1,6 +1,6 @@
 from django import forms
 from config.config import MonthNames, KeyValue
-from back.models import FileObj, Shift
+from back.models import FileObj, Shift, ShiftGroup
 
 
 # from django.core.validators import FileExtensionValidator
@@ -24,14 +24,26 @@ class FileEditForm(forms.ModelForm):
 
 
 class ShiftForm(forms.ModelForm):
-    
     uncommon_holiday = forms.MultipleChoiceField(
         label=KeyValue.uncommon_holiday,
         choices=MonthNames.JALALI_DAY_CHOICES,
         required=False
     )
 
+    # def __init__(self, user=None, **kwargs):
+    #     super(ShiftForm, self).__init__(**kwargs)
+    #     if user:
+    #         self.fields['group'].queryset = ShiftGroup.objects.filter(owner__username=user)
+
     class Meta:
         model = Shift
-        exclude = ('days_count', 'days_name', 'people_list','uncommon_holiday',)
-    
+        exclude = ('days_count', 'days_name', 'people_list', 'uncommon_holiday', 'group',)
+
+
+def ShiftForm_factory(username):
+    class ShiftForm(forms.ModelForm):
+        group = forms.ModelChoiceField(
+            queryset=ShiftGroup.objects.filter(owner__username=username)
+        )
+
+    return ShiftForm

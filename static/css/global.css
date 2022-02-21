@@ -8,11 +8,15 @@ body {
     background-image: radial-gradient(circle farthest-corner at center, #111314 0%, #1C262B 100%);
 }
 
-#head-title {
-    margin: 65px auto 65px auto;
-    text-align: center;
-
+.base-head {
+    width: 200px;
+    margin: 65px auto 30px auto;
 }
+
+#head-title {
+    text-align: center;
+}
+
 #head-link {
     color: white;
     text-decoration: none;
@@ -20,4 +24,29 @@ body {
 
 .date-picker-form * {
     font-family: 'shabnam', Arial, sans-serif;
+}
+
+.log-in-out a {
+    position: inherit;
+    width: 25px;
+    text-decoration: none;
+    color: white;
+}
+
+/*.log-in-out button {*/
+/*    width: 100px;*/
+/*    height: 30px;*/
+/*    border-radius: 10px;*/
+/*    border: 3px solid #acacac;*/
+/*}*/
+.log-in-out {
+    border: 2px solid black;
+    padding: 10px;
+    border-radius: 20px;
+    background-color: #000000;
+    margin-bottom: 70px;
+    width: 1524px;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 10px -1px 40px #00ffe3;
 }

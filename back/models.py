@@ -25,6 +25,7 @@ class ShiftGroup(models.Model):
     class Meta:
         permissions = (
             ("can_see_management", "can_see_management"),
+            ("can_add_shift_on_page", "can_add_shift_on_page"),
         )
 
     def __str__(self):
