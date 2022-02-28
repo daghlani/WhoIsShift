@@ -1,0 +1,160 @@
+.container {
+    min-width: 100%;
+    display: grid;
+    grid-template-columns: 0.5fr 2fr 0.5fr;
+    grid-template-rows: 0.1fr 5.4fr 0.4fr;
+    gap: 10px 10px;
+    grid-auto-flow: column;
+    grid-template-areas: "header header header" "left center right" "footer footer footer";
+}
+
+.footer, .center, .left, .right, .header {
+    box-shadow: 2px -1px 40px #00ffe3;
+    /*border: 1px solid;*/
+    border-radius: 25px;
+}
+
+.right,.left {
+    min-width: 20%;
+    /*max-height: 100%;*/
+}
+
+.center {
+    grid-area: center;
+    min-height: 200px;
+    padding: 35px;
+}
+
+.left {
+    grid-area: left;
+}
+
+.right {
+    /*box-shadow: none;*/
+    /*border: 1px solid;*/
+    /*border-radius: 0;*/
+    /*overflow: hidden;*/
+    /*direction: rtl;*/
+    /*display: grid;*/
+    /*grid-template-columns: 1fr 1fr 1fr;*/
+    /*grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;*/
+    /*gap: 10px 10px;*/
+    /*grid-auto-flow: row;*/
+    /*grid-template-areas:*/
+            /*"home home home"*/
+            /*"create create create"*/
+            /*". . ."*/
+            /*". . ."*/
+            /*". . ."*/
+            /*". . ."*/
+            /*". . ."*/
+            /*". . ."*/
+            /*". . ."*/
+            /*"logging logging logging";*/
+    grid-area: right;
+}
+
+
+/*.right a {*/
+    /*text-decoration: none;*/
+    /*color: white;*/
+/*}*/
+
+
+.footer {
+    grid-area: footer;
+    min-height: 100px;
+
+}
+
+.header {
+    height: 120px;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 10px 10px;
+    grid-auto-flow: row;
+    grid-template-areas:
+            "head-t"
+            "menu";
+    grid-area: header;
+    min-height: 100px;
+    /*padding: 20px;*/
+    position: sticky;
+    top: 0px;
+    z-index: 1;
+    /*background: #1b2328;*/
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+}
+@-moz-document url-prefix() {
+  .header {
+    backdrop-filter: none; background-color: #151a1c;
+  }
+}
+
+/*.header {*/
+    /*grid-area: header;*/
+    /*min-height: 100px;*/
+    /*padding: 20px;*/
+    /*position: sticky;*/
+    /*top: 0px;*/
+    /*z-index: 1;*/
+    /*background: #1b2328;*/
+/*}*/
+
+
+.create,.home,.logging {
+    /*border: 1px solid;*/
+    border-radius: 25px;
+    box-shadow: 2px -1px 40px #00ffe3;
+    padding: 22px;
+    max-height: 20%;
+}
+
+.create {
+    grid-area: create;
+}
+
+.home {
+    grid-area: home;
+}
+
+.logging {
+    grid-area: logging;
+}
+
+.menu {
+    grid-area: menu;
+    /*padding: 0 20px;*/
+    direction: rtl;
+    /*border: 1px solid;*/
+    border-radius: inherit;
+    background-color: #0f2f2f;
+}
+
+/*a.menu {*/
+    /*height: 100%;*/
+/*}*/
+
+.login,.logout,.menu-item {
+    float: right;
+    color: white;
+    text-decoration: none;
+    /*border: 1px solid;*/
+    height: 100%;
+    text-align: center;
+    padding: 15px;
+    /*box-shadow: 4px 0px 7px 5px #262626;*/
+    border-right: 1px black solid;
+    border-left: 1px black solid;
+}
+
+.login,.logout {
+    direction: ltr;
+    float: left;
+}
+
+.head-t {
+    grid-area: head-t;
+}

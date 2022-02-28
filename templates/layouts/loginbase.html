@@ -1,0 +1,48 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+{% load static %}
+{% include 'layouts/time.html' %}
+{% load custom_tags %}
+{% url 'login' as login_url %}
+
+
+<link rel="icon" href="{% static 'favicon.ico' %}">
+<!--<h3 dir="rtl">{{ j_date_t }}: {% current_date_persian %} &#45;&#45; <span id='ct5'></span></h3>-->
+
+
+<div id="wait" dir="rtl">
+    {% include 'layouts/loading.html' %}
+    <p>{{ loading_title }}</p>
+</div>
+
+
+<head>
+    <title>{% block title %}SK{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/loading.css' %}?{% now 'u' %}">
+    <link rel="stylesheet" href="{% static 'css/global.css' %}?{% now 'u' %}">
+    {% block style %}{% endblock style %}
+</head>
+
+<body>
+    <div class="base-head">
+        <a id="head-link" href="{% url 'home' %}"><h1 id="head-title">اعلام شیفت</h1></a>
+    </div>
+    {% if request.path != login_url %}
+            <div class="log-in-out">
+            {% if user.is_authenticated %}
+                <a href="{% url 'logout' %}">LogOut</a>
+                <a href="{% url 'home' %}">Home</a>
+                {% if perms.back.can_add_shift_on_page %}
+                    <a href="{% url 'shift_create' %}">Create Shift</a>
+                {% endif %}
+            {% else %}
+                <a href="{% url 'login' %}">LogIn</a>
+            {% endif %}
+        </div>
+    {% endif %}
+    <div id="base-div">
+        {% block content %}{% endblock content %}
+        {% block javascripts %}{% endblock javascripts %}
+        <script src="{% static 'js/HideLoading.js' %}"></script>
+    </div>
+</body>

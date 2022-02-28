@@ -6,6 +6,7 @@ body {
     color: #f6f6f6;
     font-family: 'shabnam', Arial, sans-serif;
     background-image: radial-gradient(circle farthest-corner at center, #111314 0%, #1C262B 100%);
+    padding-top: 47px;
 }
 
 .base-head {
@@ -15,6 +16,7 @@ body {
 
 #head-title {
     text-align: center;
+    margin: 10px 0 0;
 }
 
 #head-link {
@@ -45,8 +47,28 @@ body {
     border-radius: 20px;
     background-color: #000000;
     margin-bottom: 70px;
-    width: 1524px;
+    /*width: 1524px;*/
     margin-left: auto;
     margin-right: auto;
     box-shadow: 10px -1px 40px #00ffe3;
+}
+
+a:hover {
+    color: #79ca0a;
+}
+
+.create-form {
+    margin-top: 150px;
+}
+
+.form-group {
+    width: 250px;
+}
+
+.form-row {
+    margin-left: 32%;
+}
+
+.form-btn {
+    margin-left: 33%;
 }

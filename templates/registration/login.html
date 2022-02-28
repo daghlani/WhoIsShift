@@ -1,4 +1,4 @@
-{% extends 'layouts/base.html' %}
+{% extends 'layouts/loginbase.html' %}
 {% block title %}Login{% endblock %}
 {% load static %}
 {% block style %}
@@ -7,9 +7,6 @@
     <!-- <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet"> -->
 {% endblock style %}
 {% block content %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
   <!-- Design by foolishdeveloper.com -->
     <div class="background">
         <div class="shape"></div>
@@ -19,10 +16,10 @@
         {% csrf_token %}
         <h3>وارد شوید</h3>
 
-        <label for="username">نام کاربری</label>
+        <label for="id_username">نام کاربری</label>
         <input id="id_username" name="username" type="text" class="form-control">
 
-        <label for="password">گذرواژه</label>
+        <label for="id_password">گذرواژه</label>
         <input id="id_password" name="password" type="password" class="form-control">
         {% if form.errors %}
             <p style="margin-bottom: -40px">

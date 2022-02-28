@@ -21,6 +21,7 @@ class ShiftGroup(models.Model):
     friday_req = models.IntegerField(verbose_name=KeyValue.friday_req, default=1)
     uncommon_holiday_req = models.IntegerField(verbose_name=KeyValue.uncommon_holiday_req, default=1)
     shift_count_limit = models.IntegerField(verbose_name=KeyValue.shift_count_limit, default=5)
+    phone_number = models.IntegerField(verbose_name=KeyValue.shift_count_limit, default=9090)
 
     class Meta:
         permissions = (
@@ -125,11 +126,7 @@ class Shift(models.Model):
     days_count = models.IntegerField()
     days_name = models.TextField()
     uncommon_holiday = models.TextField(blank=True, null=True)
-    # uncommon_holiday = model.MultipleChoiceField(
-    #     label=KeyValue.uncommon_holiday,
-    #     choices=Employee.objects.filter(is_active=True).values_list('jira_id', 'jira_id')
-    # )
-
+    
     def __str__(self):
         return '{} - {} - {}'.format(str(self.group), str(self.j_year_num), str(self.j_month_num))
 

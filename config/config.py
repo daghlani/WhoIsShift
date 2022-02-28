@@ -42,6 +42,8 @@ class KeyValue:
     day_res = 'مسئول روز'
     night = 'شیفت شب'
     night_res = 'مسئول شب'
+    phone_number = 'شماره تلفن'
+    chose_value = 'انتخاب کنید...'
 
 
 class MonthNames:
@@ -67,6 +69,7 @@ class MonthNames:
     ]
 
     JALALI_MONTH_CHOICES = [
+        ('', KeyValue.chose_value),
         (1, FAR), (2, ORD), (3, KHO),
         (4, TIR), (5, MOR), (6, SHA),
         (7, MEH), (8, ABA), (9, AZA),
@@ -76,7 +79,9 @@ class MonthNames:
     JALALI_YEAR_CHOICES = []
     for r in range(first_year_of_lunch, (first_year_of_lunch + year_range)):
         JALALI_YEAR_CHOICES.append((r, r))
+    JALALI_YEAR_CHOICES.append(('', KeyValue.chose_value))
 
     JALALI_DAY_CHOICES = []
-    for r in range(1,32):
+    for r in range(1, 32):
         JALALI_DAY_CHOICES.append((r, r))
+    # JALALI_DAY_CHOICES.append((None, 'Choose...'))

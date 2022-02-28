@@ -16,7 +16,7 @@ def current_time(format_string):
 @register.simple_tag
 def current_date_persian():
     a = datetime_to_jalali(datetime.now())
-    return eng_to_persian_number("{}/{}/{}".format(a[2],a[1],a[0]))
+    return eng_to_persian_number("{}/{}/{}".format(a[2], a[1], a[0]))
 
 
 # Filter => {{week_day|weekd:"fa"}} or {{week_day|weekd:"en"}}
@@ -27,7 +27,6 @@ def weekd(week_day, lang):
         return persian_to_eng_number(week_day)
     else:
         return week_day
-
 
 
 # Filter => {{num|l10n_num:"fa"}} or {{num|l10n_num:"en"}}
@@ -51,7 +50,8 @@ def modify_week(value, arg):
     if arg == "title_case":
         return value.title()
     return value
-    
+
+
 register.filter('modify_week', modify_week)
 register.filter('l10n_num', l10n_num)
 register.filter('weekd', weekd)

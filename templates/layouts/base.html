@@ -1,14 +1,8 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-        "http://www.w3.org/TR/html4/loose.dtd">
 {% load static %}
-{% include 'layouts/time.html' %}
+<!--{% include 'layouts/time.html' %}-->
 {% load custom_tags %}
 {% url 'login' as login_url %}
-
-
 <link rel="icon" href="{% static 'favicon.ico' %}">
-<h3 dir="rtl">{{ j_date_t }}: {% current_date_persian %} -- <span id='ct5'></span></h3>
-
 
 <div id="wait" dir="rtl">
     {% include 'layouts/loading.html' %}
@@ -17,34 +11,48 @@
 
 
 <head>
+    <link href="{% static 'css/bootstrap/bootstrap.min.css' %}" rel="stylesheet">
+    <script src="{% static 'js/bootstrap/bootstrap.bundle.min.js' %}" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
     <title>{% block title %}SK{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/loading.css' %}?{% now 'u' %}">
     <link rel="stylesheet" href="{% static 'css/global.css' %}?{% now 'u' %}">
+    <link rel="stylesheet" href="{% static 'css/newbase.css' %}?{% now 'u' %}">
+    <!--<link href="{% static 'css/bootstrap/bootstrap.min.css' %}" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">-->
     {% block style %}{% endblock style %}
 </head>
-
 <body>
-    <div class="base-head">
-        <a id="head-link" href="{% url 'home' %}"><h1 id="head-title">اعلام شیفت</h1></a>
-    </div>
-    {% if request.path != login_url %}
-            <div class="log-in-out">
-            {% if user.is_authenticated %}
-                <a href={% url 'logout' %}>LogOut</a>
-                <a href={% url 'home' %}>Home</a>
-                {% if perms.back.can_add_shift_on_page %}
-                    <a href="{% url 'shift_create' %}">Create Shift</a>
+
+
+    <div class="container">
+        <div class="header">
+            <div class="head-t">
+                <a id="head-link" href="{% url 'home' %}"><h1 id="head-title">اعلام شیفت</h1></a>
+            </div>
+            <div class="menu">
+                {% if request.path != login_url %}
+                    {% if user.is_authenticated %}
+                        <a class="logout" href="{% url 'logout' %}">خروج</a>
+                        <a class="menu-item" href="{% url 'home' %}">خانه</a>
+                        {% if perms.back.can_add_shift_on_page %}
+                            <a class="menu-item" href="{% url 'shift_create' %}">ایجاد شیفت</a>
+                        {% endif %}
+                    {% else %}
+                        <a class="login" href="{% url 'login' %}">ورود</a>
+                    {% endif %}
                 {% endif %}
-{#                <a href="/accounts/logout">LogOut</a>#}
-{#                <a href="/accounts/logout">LogOut</a>#}
-            {% else %}
-                <a href="{% url 'login' %}">LogIn</a>
-            {% endif %}
+            </div>
+            <!--<h3 dir="rtl">{{ j_date_t }}: {% current_date_persian %} &#45;&#45; <span id='ct5'></span></h3>-->
         </div>
-    {% endif %}
-    <div id="base-div">
-        {% block content %}{% endblock content %}
-        {% block javascripts %}{% endblock javascripts %}
-        <script src="{% static 'js/HideLoading.js' %}"></script>
+        <div class="left"></div>
+        <div class="center">
+            <div id="base-div">
+                {% block content %}{% endblock content %}
+                {% block javascripts %}{% endblock javascripts %}
+                <script src="{% static 'js/HideLoading.js' %}"></script>
+            </div>
+        </div>
+        <div class="right"></div>
+        <div class="footer"></div>
     </div>
 </body>
+

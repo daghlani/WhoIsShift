@@ -132,3 +132,8 @@ button{
     border-radius: 5px;
     cursor: pointer;
 }
+
+
+.center {
+    padding: 367px;
+}

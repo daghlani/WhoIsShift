@@ -1,6 +1,8 @@
 from django import forms
 from config.config import MonthNames, KeyValue
 from back.models import FileObj, Shift, ShiftGroup
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Submit, Row, Column, Field, Fieldset
 
 
 # from django.core.validators import FileExtensionValidator
@@ -38,6 +40,28 @@ class ShiftForm(forms.ModelForm):
     class Meta:
         model = Shift
         exclude = ('days_count', 'days_name', 'people_list', 'uncommon_holiday', 'group',)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # for visible in self.visible_fields():
+        #     print(visible.field.widget.attrs)
+        #     visible.field.widget.attrs['class'] = 'test-class'
+        #     print(visible.field.widget.attrs)
+
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Row(
+                Column('j_month_num', css_class='form-group col-md-3 mb-0'),
+                Column('j_year_num', css_class='form-group col-md-3 mb-0'),
+                css_class='form-row'
+                ),
+            Row(
+                Column('uncommon_holiday', css_class='form-group'),
+
+                css_class='form-row'),
+            Submit('submit', KeyValue.submit, css_class='form-row form-btn col-md-5 mt-2'),
+        )
+        self.helper.layout.css_class = 'test'
 
 
 def ShiftForm_factory(username):
