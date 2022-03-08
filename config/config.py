@@ -21,6 +21,7 @@ WEEK_MAP = dict(
 
 
 class KeyValue:
+    welcome_txt = 'خوش آمدید'
     j_date_t = 'امروز'
     row = 'ردیف'
     submit = 'ارسال'

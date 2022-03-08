@@ -4,6 +4,7 @@ register = template.Library()
 
 from tools.jalali import *
 from tools.formatter import *
+from back.models import Profile
 
 
 # {% current_time "%d/%m/%Y %H:%M:%S %p" %}
@@ -52,6 +53,15 @@ def modify_week(value, arg):
     return value
 
 
+def get_pr_name(username):
+    try:
+        pr = Profile.objects.get(user__username=username)
+    except Profile.DoesNotExist:
+        return 'unknown'
+    return "{} {}".format(pr.name, pr.last_name)
+
+
 register.filter('modify_week', modify_week)
 register.filter('l10n_num', l10n_num)
 register.filter('weekd', weekd)
+register.filter('get_pr_name', get_pr_name)

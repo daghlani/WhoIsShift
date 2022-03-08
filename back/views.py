@@ -23,6 +23,7 @@ def glob_context():
     ctx = dict()
     ctx['loading_title'] = KeyValue.loading_title
     ctx['j_date_t'] = KeyValue.j_date_t
+    ctx['welcome_txt'] = KeyValue.welcome_txt
     return ctx
 
 
@@ -363,3 +364,5 @@ def shift_create_tr(request):
     context['texts'] = texts
     context['form'] = form
     return render(request, 'back/shift_create.html', context)
+
+# ToDo Make a Profile page

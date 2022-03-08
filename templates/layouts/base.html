@@ -32,6 +32,7 @@
                 {% if request.path != login_url %}
                     {% if user.is_authenticated %}
                         <a class="logout" href="{% url 'logout' %}">خروج</a>
+                        <a class="menu-item" href="{% url 'home' %}">«{{ user.username|get_pr_name }}» {{ welcome_txt }}</a>
                         <a class="menu-item" href="{% url 'home' %}">خانه</a>
                         {% if perms.back.can_add_shift_on_page %}
                             <a class="menu-item" href="{% url 'shift_create' %}">ایجاد شیفت</a>
