@@ -48,7 +48,7 @@ class SpecialDayAdmin(admin.ModelAdmin):
 
 
 class ShiftAdmin(admin.ModelAdmin):
-    list_display = ('group', 'j_year_num', 'j_month_num',)
+    list_display = ('group', 'j_year_num_first', 'j_month_num_first',)
     readonly_fields = ('days_count', 'days_name',)
     search_fields = list_display
     list_filter = ('group',)

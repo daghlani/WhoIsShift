@@ -13,6 +13,11 @@ def current_time(format_string):
     return datetime.now().strftime(format_string)
 
 
+def type_splitter(type):
+    return type.split('__')[0]
+
+
+
 # {% current_date_persian %}
 @register.simple_tag
 def current_date_persian():
@@ -61,6 +66,7 @@ def get_pr_name(username):
     return "{} {}".format(pr.name, pr.last_name)
 
 
+register.filter('type_splitter', type_splitter)
 register.filter('modify_week', modify_week)
 register.filter('l10n_num', l10n_num)
 register.filter('weekd', weekd)

@@ -1,4 +1,5 @@
 {% extends 'layouts/base.html' %}
+{% load crispy_forms_filters %}
 {% load static %}
 {% load crispy_forms_tags %}
 
@@ -6,17 +7,17 @@
 <form method="post" enctype="multipart/form-data" class="create-form">
     <!--{% csrf_token %}-->
     {% crispy form %}
-    <!--{{ form|crispy }}-->
-    <!--{{ form.as_table }}-->
+{#    <!--{{ form|crispy }}-->#}
+{#    <!--{{ form.as_table }}-->#}
     <!--<div class="form">-->
         <!--<div class="col-6">-->
-            <!--{{ form.j_month_num|as_crispy_field }}-->
+{#            <!--{{ form.j_month_num_first|as_crispy_field }}-->#}
         <!--</div>-->
         <!--<div class="form-group col-md-4 mb-0">-->
-            <!--{{ form.j_year_num|as_crispy_field }}-->
+{#            <!--{{ form.j_year_num_first|as_crispy_field }}-->#}
         <!--</div>-->
         <!--<div class="col-6">-->
-            <!--{{ form.uncommon_holiday|as_crispy_field }}-->
+{#            <!--{{ form.uncommon_holiday_first|as_crispy_field }}-->#}
         <!--</div>-->
     <!--</div>-->
 

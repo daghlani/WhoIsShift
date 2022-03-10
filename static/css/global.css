@@ -65,10 +65,19 @@ a:hover {
     width: 250px;
 }
 
+.form-group-uncommon {
+    width: calc(3 * 245px);
+}
+
 .form-row {
-    margin-left: 32%;
+    margin-left: 29%;
 }
 
 .form-btn {
-    margin-left: 33%;
+    margin-left: 30%;
+}
+
+.jalali_date-date {
+    width: 226px;
+
 }

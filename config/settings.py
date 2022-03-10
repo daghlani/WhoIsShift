@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 import os
 
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -38,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'crispy_forms',
+    'jalali_date',
     'back'
 ]
 
@@ -108,11 +108,11 @@ LOGGING = {
     # A handler for WARNING. It is basically writing the WARNING messages into a file called WARNING.log
     'formatters': {
         'very-verbose': {
-            'format': '[{levelname}] [{asctime}] [{module}] [{process:d}] [{thread:d}] {message}',
+            'format': '[{levelname}] [{asctime}] [{module}:{lineno:d}] [{process:d}] [{thread:d}] {message}',
             'style': '{',
         },
         'verbose': {
-            'format': '[{levelname}] [{asctime}] [{module}] [{process:d}] [{thread:d}] {message}',
+            'format': '[{levelname}] [{asctime}] [{module}:{lineno:d}] [{process:d}] [{thread:d}] {message}',
             'style': '{',
         },
         'simple': {
@@ -188,6 +188,44 @@ MEDIA_URL = '/media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
 LOGIN_REDIRECT_URL = "home"
 LOGOUT_REDIRECT_URL = "login"
+
+# AUTHENTICATION_BACKENDS = [
+#     "django_auth_ldap.backend.LDAPBackend",
+#     "django.contrib.auth.backends.ModelBackend",
+# ]
+# AUTH_LDAP_SERVER_URI = "ldaps://172.16.224.30:636"
+# import ldap
+# from django_auth_ldap.config import LDAPSearch, LDAPSearchUnion
+# AUTH_LDAP_BIND_DN = "cn=administrator,dc=ibldap,dc=bm"
+# AUTH_LDAP_BIND_PASSWORD = "behdc#2adm"
+# AUTH_LDAP_USER_SEARCH = LDAPSearchUnion(
+#     LDAPSearch("ou=Users,dc=ibldap,dc=bm", ldap.SCOPE_SUBTREE, "(uid=%(user)s)"),
+#     # LDAPSearch("ou=otherusers,dc=example,dc=com", ldap.SCOPE_SUBTREE, "(uid=%(user)s)"),
+# )
+
+
+JALALI_DATE_DEFAULTS = {
+    'Strftime': {
+        'date': '%y/%m/%d',
+        'datetime': '%H:%M:%S _ %y/%m/%d',
+    },
+    'Static': {
+        'js': [
+            # loading datepicker
+            'admin/js/django_jalali.min.js',
+            # OR
+            # 'admin/jquery.ui.datepicker.jalali/scripts/jquery.ui.core.js',
+            # 'admin/jquery.ui.datepicker.jalali/scripts/calendar.js',
+            # 'admin/jquery.ui.datepicker.jalali/scripts/jquery.ui.datepicker-cc.js',
+            # 'admin/jquery.ui.datepicker.jalali/scripts/jquery.ui.datepicker-cc-fa.js',
+            # 'admin/js/main.js',
+        ],
+        'css': {
+            'all': [
+                'admin/jquery.ui.datepicker.jalali/themes/base/jquery-ui.min.css',
+            ]
+        }
+    },
+}

@@ -119,16 +119,21 @@ class Friday(SpecialDay):
 
 
 class Shift(models.Model):
-    j_month_num = models.IntegerField(verbose_name=MonthNames.month, choices=MonthNames.JALALI_MONTH_CHOICES)
-    j_year_num = models.IntegerField(verbose_name=MonthNames.year, choices=MonthNames.JALALI_YEAR_CHOICES)
+    j_year_num_first = models.IntegerField(verbose_name=MonthNames.year_first, choices=MonthNames.JALALI_YEAR_CHOICES, null=True, blank=True)
+    j_year_num_last = models.IntegerField(verbose_name=MonthNames.year_last, choices=MonthNames.JALALI_YEAR_CHOICES, null=True, blank=True)
+    j_month_num_first = models.IntegerField(verbose_name=MonthNames.month_first, choices=MonthNames.JALALI_MONTH_CHOICES, null=True, blank=True)
+    j_month_num_last = models.IntegerField(verbose_name=MonthNames.month_last, choices=MonthNames.JALALI_MONTH_CHOICES, null=True, blank=True)
+    j_day_num_first = models.IntegerField(verbose_name=MonthNames.day_first, null=True, blank=True)
+    j_day_num_last = models.IntegerField(verbose_name=MonthNames.day_last, null=True, blank=True)
     group = models.ForeignKey(ShiftGroup, on_delete=models.CASCADE, default=None)
     people_list = models.TextField()
     days_count = models.IntegerField()
     days_name = models.TextField()
-    uncommon_holiday = models.TextField(blank=True, null=True)
-    
+    uncommon_holiday_first = models.TextField(blank=True, null=True)
+    uncommon_holiday_last = models.TextField(blank=True, null=True)
+
     def __str__(self):
-        return '{} - {} - {}'.format(str(self.group), str(self.j_year_num), str(self.j_month_num))
+        return '{} - {} - {}'.format(str(self.group), str(self.j_year_num_first), str(self.j_month_num_first))
 
 
 class ShiftDay(models.Model):

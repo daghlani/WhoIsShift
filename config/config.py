@@ -45,11 +45,19 @@ class KeyValue:
     night_res = 'مسئول شب'
     phone_number = 'شماره تلفن'
     chose_value = 'انتخاب کنید...'
+    start_date = 'تارخ شروع'
+    end_date = 'تاریخ پایان'
 
 
 class MonthNames:
+    year_first = 'از سال'
+    year_last = 'تا سال'
     year = 'سال'
+    month_first = 'از ماه'
+    month_last = 'تا ماه'
     month = 'ماه'
+    day_first = 'از روز'
+    day_last = 'تا روز'
     day = 'روز'
     FAR = 'فروردین'
     ORD = 'اردیبهشت'

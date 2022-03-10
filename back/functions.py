@@ -3,6 +3,7 @@ from back import models
 from django.db.models import F
 from tools.jalali import jalali_timedelta
 from back.logger import logger
+from tools.jalali import gregorian_to_jalali
 
 
 def printer(s, side_space=3, side_str=6, char='#'):
@@ -51,22 +52,28 @@ def check_last_n_days(y, m, d, group, name, shift_count_num, n=2):
     return True
 
 
-def special_day_cal_(ind, j, d_type, d_count, group_shift_count, people_group_type_list, form_obj,u_holiday_days=None,u_holiday=None):
-    if j == d_type:
+def special_day_cal_(ind, j, d_type, d_count, group_shift_count, people_group_type_list, form_obj, u_holiday_days=None,
+                     u_holiday=None):
+    # if j == d_type:
+    j_name, j_date = j.split('__')
+    greg_j_date_y, greg_j_date_m, greg_j_date_d = j_date.split('/')
+    y, m, d = gregorian_to_jalali(int(greg_j_date_y), int(greg_j_date_m), int(greg_j_date_d))
+    if j_name == d_type:
         i_people = []
         unavailable_people = []
-        y = form_obj.j_year_num
-        m = form_obj.j_month_num
-        d = ind + 1
+        # y = form_obj.j_year_num
+        # m = form_obj.j_month_num
+        # d = ind + 1
         group = form_obj.group
         if u_holiday is not None and u_holiday_days is not None:
             print('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
-            print(d,u_holiday, u_holiday_days)
-            if str(d) in u_holiday_days:
+            print(d, u_holiday, u_holiday_days)
+            if str('{}/{}'.format(m, d)) in u_holiday_days:
                 d_count = u_holiday
-                print('d_count is: ', d_count)        
+                print('d_count is: ', d_count)
         print('d_count is: ', d_count)
-        print('start people_group_type_list of {} is :-----------------{}---------------------'.format(d_type, people_group_type_list))
+        print('start people_group_type_list of {} is :-----------------{}---------------------'.format(d_type,
+                                                                                                       people_group_type_list))
         for _time in range(d_count):
             print('people of day {} is: {}'.format(d_type, people_group_type_list))
             while True:
@@ -113,21 +120,32 @@ def special_day_cal_(ind, j, d_type, d_count, group_shift_count, people_group_ty
         print(100 * '-')
 
 
-def normal_day_cal_(ind, j, d_count, group_shift_count, form_obj,u_holiday_days=None,u_holiday=None):
-    if j not in ['Tuesday', 'Thursday', 'Friday']:
+def normal_day_cal_(ind, j, d_count, group_shift_count, form_obj, u_holiday_days=None, u_holiday=None):
+    # if j not in ['Tuesday', 'Thursday', 'Friday']:
+    j_name, j_date = j.split('__')
+    greg_j_date_y, greg_j_date_m, greg_j_date_d = j_date.split('/')
+    print(greg_j_date_y, greg_j_date_m, greg_j_date_d)
+    y, m, d = gregorian_to_jalali(int(greg_j_date_y), int(greg_j_date_m), int(greg_j_date_d))
+    if j_name not in ['Tuesday', 'Thursday', 'Friday']:
         people_list = form_obj.people_list.split(',')
         i_people = []
         unavailable_people = []
-        y = form_obj.j_year_num
-        m = form_obj.j_month_num
-        d = ind + 1
+        # y = form_obj.j_year_num
+        # m = form_obj.j_month_num
+        # d = ind + 1
         group = form_obj.group
+        # if u_holiday is not None and u_holiday_days is not None:
+        #     print('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
+        #     print(d, u_holiday, u_holiday_days)
+        #     if str(d) in u_holiday_days:
+        #         d_count = u_holiday
+        #         print('d_count is: ', d_count)
         if u_holiday is not None and u_holiday_days is not None:
             print('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
-            print(d,u_holiday, u_holiday_days)
-            if str(d) in u_holiday_days:
+            print(d, u_holiday, u_holiday_days)
+            if str('{}/{}'.format(m, d)) in u_holiday_days:
                 d_count = u_holiday
-                print('d_count is: ', d_count)        
+                print('d_count is: ', d_count)
         print('d_count is: ', d_count)
         print('start people_list is :-----------------{}---------------------'.format(people_list))
         for _time in range(d_count):

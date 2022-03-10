@@ -111,6 +111,12 @@ def dates_between_as_name(start_date, end_date):
     return days
 
 
+def dates_between_as_name_date(start_date, end_date):
+    delta = end_date - start_date  # as timedelta
+    days = [(start_date + timedelta(days=i)).strftime("%A__%Y/%m/%d") for i in range(delta.days + 1)]
+    return days
+
+
 def return_day_names(jalali_year, jalali_month):
     first_y, first_m, first_d = jalali_to_gregorian(jalali_year, jalali_month, 1)
     end_y, end_m, end_d = jalali_to_gregorian(jalali_year, jalali_month,
@@ -118,6 +124,16 @@ def return_day_names(jalali_year, jalali_month):
     first_of_month = greg_to_datetime(first_y, first_m, first_d)
     end_of_month = greg_to_datetime(end_y, end_m, end_d)
     return dates_between_as_name(first_of_month, end_of_month)
+
+
+def return_day_names_of_period(jalali_year_first, jalali_year_last, jalali_month_first, jalali_month_last, first_day,
+                               last_day):
+    first_y, first_m, first_d = jalali_to_gregorian(jalali_year_first, jalali_month_first, first_day)
+    end_y, end_m, end_d = jalali_to_gregorian(jalali_year_last, jalali_month_last, last_day)
+    first_of_month = greg_to_datetime(first_y, first_m, first_d)
+    end_of_month = greg_to_datetime(end_y, end_m, end_d)
+    # return dates_between_as_name(first_of_month, end_of_month)
+    return dates_between_as_name_date(first_of_month, end_of_month)
 
 
 def get_previous_month(y, m):
@@ -128,4 +144,3 @@ def get_previous_month(y, m):
         mm = m - 1
         yy = y
     return [yy, mm]
-
