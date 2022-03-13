@@ -29,9 +29,11 @@ def get_class(kls):
     return getattr(models, PRI_WEEK_MAP[kls.upper()])
 
 
-def check_last_n_days(y, m, d, group, name,  shift_count_num, n=2):
+# def check_last_n_days(y, m, d, group, name,  shift_count_num, n=2):
+def check_last_n_days(y, m, d, group, name,  shift_count_num):
     print('name: ', name)
     counter = 0
+    n = group.res_number
     if Profile.objects.get(user__username=name).shift_count >= shift_count_num:
         return False
     while counter < n:

@@ -53,6 +53,7 @@ class KeyValue:
     formally_holiday = 'تعطیلات رسمی'
     file_name = 'نام فایل'
     group = 'گروه'
+    rest_number = 'تعداد روز استخراحت'
     normal_req = 'حداقل نفر روز عادی'
     tuesday_req = 'حداقل نفر سه‌شنبه'
     thursday_req = 'حداقل نفر پنجشنبه'

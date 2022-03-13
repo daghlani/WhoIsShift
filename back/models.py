@@ -17,6 +17,7 @@ class ShiftGroup(models.Model):
     pr_name = models.CharField(max_length=100, null=True, blank=True)
     prefix = models.CharField(max_length=4, validators=[min_len_4])
     owner = models.OneToOneField(User, on_delete=models.CASCADE, unique=True)
+    rest_number = models.IntegerField(verbose_name=KeyValue.rest_number, default=2)
     normal_req = models.IntegerField(verbose_name=KeyValue.normal_req, default=4)
     tuesday_req = models.IntegerField(verbose_name=KeyValue.tuesday_req, default=3)
     thursday_req = models.IntegerField(verbose_name=KeyValue.thursday_req, default=2)
