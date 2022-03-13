@@ -17,6 +17,29 @@ WEEK_MAP = dict(
     Wednesday='چهارشنبه',
     Thursday='پنجشبنه',
     Friday='جمعه',
+    SAT='شنبه',
+    SUN='یکشنبه',
+    MON='دوشنبه',
+    TUE='سه‌شنبه',
+    WED='چهارشنبه',
+    THU='پنجشبنه',
+    FRI='جمعه',
+)
+PRI_WEEK_MAP = dict(
+    Saturday='SAT',
+    Sunday='SUN',
+    Monday='MON',
+    Tuesday='TUE',
+    Wednesday='WED',
+    Thursday='THU',
+    Friday='FRI',
+    SAT='Saturday',
+    SUN='Sunday',
+    MON='Monday',
+    TUE='Tuesday',
+    WED='Wednesday',
+    THU='Thursday',
+    FRI='Friday',
 )
 
 

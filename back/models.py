@@ -2,18 +2,20 @@ from django.db import models
 from django.utils.safestring import mark_safe
 from django.template.defaultfilters import slugify
 from django.contrib.auth.models import User
-from django.core.validators import RegexValidator
+from django.core.validators import RegexValidator, MinLengthValidator
 from django.core.validators import FileExtensionValidator
 from config.config import MonthNames, excel_file_extension, KeyValue
 
 alphanumeric = RegexValidator(r'^[0-9a-zA-Z]*$', 'Only alphanumeric characters are allowed.')
+min_len_4 = MinLengthValidator(limit_value=4)
+min_len_19 = MinLengthValidator(limit_value=19)
 
 
 class ShiftGroup(models.Model):
     id = models.IntegerField(primary_key=True, auto_created=True, unique=True)
     name = models.CharField(max_length=50, validators=[alphanumeric], null=False, blank=False)
     pr_name = models.CharField(max_length=100, null=True, blank=True)
-    prefix = models.CharField(max_length=4)
+    prefix = models.CharField(max_length=4, validators=[min_len_4])
     owner = models.OneToOneField(User, on_delete=models.CASCADE, unique=True)
     normal_req = models.IntegerField(verbose_name=KeyValue.normal_req, default=4)
     tuesday_req = models.IntegerField(verbose_name=KeyValue.tuesday_req, default=3)
@@ -119,10 +121,14 @@ class Friday(SpecialDay):
 
 
 class Shift(models.Model):
-    j_year_num_first = models.IntegerField(verbose_name=MonthNames.year_first, choices=MonthNames.JALALI_YEAR_CHOICES, null=True, blank=True)
-    j_year_num_last = models.IntegerField(verbose_name=MonthNames.year_last, choices=MonthNames.JALALI_YEAR_CHOICES, null=True, blank=True)
-    j_month_num_first = models.IntegerField(verbose_name=MonthNames.month_first, choices=MonthNames.JALALI_MONTH_CHOICES, null=True, blank=True)
-    j_month_num_last = models.IntegerField(verbose_name=MonthNames.month_last, choices=MonthNames.JALALI_MONTH_CHOICES, null=True, blank=True)
+    j_year_num_first = models.IntegerField(verbose_name=MonthNames.year_first, choices=MonthNames.JALALI_YEAR_CHOICES,
+                                           null=True, blank=True)
+    j_year_num_last = models.IntegerField(verbose_name=MonthNames.year_last, choices=MonthNames.JALALI_YEAR_CHOICES,
+                                          null=True, blank=True)
+    j_month_num_first = models.IntegerField(verbose_name=MonthNames.month_first,
+                                            choices=MonthNames.JALALI_MONTH_CHOICES, null=True, blank=True)
+    j_month_num_last = models.IntegerField(verbose_name=MonthNames.month_last, choices=MonthNames.JALALI_MONTH_CHOICES,
+                                           null=True, blank=True)
     j_day_num_first = models.IntegerField(verbose_name=MonthNames.day_first, null=True, blank=True)
     j_day_num_last = models.IntegerField(verbose_name=MonthNames.day_last, null=True, blank=True)
     group = models.ForeignKey(ShiftGroup, on_delete=models.CASCADE, default=None)
@@ -147,7 +153,7 @@ class ShiftDay(models.Model):
     night_pr_people_list = models.TextField()
     day_people_list = models.TextField(null=True, blank=True)
     day_pr_people_list = models.TextField(null=True, blank=True)
-    type = models.CharField(max_length=20)
+    type = models.CharField(max_length=19, validators=[min_len_19], unique=True)
     is_formally_holiday = models.BooleanField(default=False)
     day_responsible = models.CharField(max_length=30, default=None, null=True)
     night_responsible = models.CharField(max_length=30, default=None, null=True)

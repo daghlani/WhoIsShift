@@ -17,8 +17,10 @@ from jalali_date.widgets import AdminJalaliDateWidget, AdminSplitJalaliDateTime
 
 
 class DatePickerForm(forms.Form):
-    month = forms.IntegerField(label=MonthNames.month, widget=forms.Select(choices=MonthNames.JALALI_MONTH_CHOICES))
-    year = forms.IntegerField(label=MonthNames.year, widget=forms.Select(choices=MonthNames.JALALI_YEAR_CHOICES))
+    month = forms.IntegerField(label=MonthNames.month, widget=forms.Select(
+        choices=MonthNames.JALALI_MONTH_CHOICES, attrs={'class': 'month_field form-select-sm'}))
+    year = forms.IntegerField(label=MonthNames.year, widget=forms.Select(choices=MonthNames.JALALI_YEAR_CHOICES, attrs={
+        'class': 'year_field form-select-sm'}))
 
 
 class FileEditForm(forms.ModelForm):

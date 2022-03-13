@@ -17,7 +17,6 @@ from back.decorator import check_grp_owner
 from back.functions import *
 from threading import Thread
 from back.logger import logger
-from jalali_date import datetime2jalali, date2jalali
 
 
 def glob_context():
@@ -152,144 +151,6 @@ def file_add(request):
     return render(request, 'back/file_add.html', context)
 
 
-#
-# @check_grp_owner
-# def shift_create(request):
-#     context = glob_context()
-#     if request.method == 'POST':
-#         try:
-#             form = ShiftForm(request.POST)
-#             if form.is_valid():
-#                 start_date = form.cleaned_data['start_date'].split('-')
-#                 end_date = form.cleaned_data['end_date'].split('-')
-#                 # selected_year_first = form.cleaned_data['j_year_num_first']
-#                 selected_year_first = start_date[0]
-#                 # selected_year_last = form.cleaned_data['j_year_num_last']
-#                 selected_year_last = end_date[0]
-#                 # selected_month_first = form.cleaned_data['j_month_num_first']
-#                 selected_month_first = start_date[1]
-#                 # selected_month_last = form.cleaned_data['j_month_num_last']
-#                 selected_month_last = end_date[1]
-#                 # selected_day_first = form.cleaned_data['j_day_num_first']
-#                 selected_day_first = start_date[2]
-#                 # selected_day_last = form.cleaned_data['j_day_num_last']
-#                 selected_day_last = end_date[2]
-#                 # selected_formally_holiday = form.cleaned_data['formally_holiday']
-#                 sel_un_hol_first = form.cleaned_data['formally_holiday_first']
-#                 sel_un_hol_last = form.cleaned_data['formally_holiday_last']
-#                 selected_formally_holiday = ['{}/{}'.format(selected_month_first, i) for i in sel_un_hol_first] + \
-#                                             ['{}/{}'.format(selected_month_last, i) for i in sel_un_hol_last]
-#                 selected_group = ShiftGroup.objects.get(owner__username=request.user)
-#                 previous_month = get_previous_month(selected_year_first, selected_month_first)
-#                 if Shift.objects.filter(group=selected_group).exists():
-#                     if not Shift.objects.filter(group=selected_group, j_month_num_first=previous_month[1],
-#                                                 j_year_num_first=previous_month[0]).exists():
-#                         printer(
-#                             'Selected date ({}-{}) is incorrect. there isn\'t previous month of your choice.'.format(
-#                                 selected_year_first, selected_month_first))
-#                         return redirect('/')
-#                 if Shift.objects.filter(group=selected_group, j_month_num_first=selected_month_first,
-#                                         j_year_num_first=selected_year_first).exists():
-#                     printer('duplicate shift!!!!!!')
-#                     return redirect('/')
-#                 form_obj = form.save(commit=False)
-#                 form_obj.people_list = ','.join(
-#                     list(Profile.objects.filter(group=selected_group, in_shift=True).values_list('user__username',
-#                                                                                                  flat=True)))
-#                 # list_of_days = return_day_names(selected_year, selected_month)
-#                 list_of_days = return_day_names_of_period(
-#                     jalali_year_first=selected_year_first,
-#                     jalali_year_last=selected_year_last,
-#                     jalali_month_first=selected_month_first,
-#                     jalali_month_last=selected_month_last,
-#                     first_day=selected_day_first,
-#                     last_day=selected_day_last
-#                 )
-#                 form_obj.days_name = ','.join(list_of_days)
-#                 form_obj.days_count = len(list_of_days)
-#                 form_obj.group = selected_group
-#                 form_obj.save()
-#                 ################################################################################################
-#                 days_list = form_obj.days_name.split(',')
-#                 normal_limit_count = selected_group.normal_req
-#                 tuesday_limit_count = selected_group.tuesday_req
-#                 thursday_limit_count = selected_group.thursday_req
-#                 friday_limit_count = selected_group.friday_req
-#                 formally_holiday_limit_count = selected_group.formally_holiday_req
-#                 shift_count_limit_count = selected_group.shift_count_limit
-#
-#                 Profile.objects.filter(group=form_obj.group).update(shift_count=0)
-#
-#                 update_special_day_backup(selected_group, Tuesday)
-#                 update_special_day_backup(selected_group, Thursday)
-#                 update_special_day_backup(selected_group, Friday)
-#
-#                 for ind, i in enumerate(days_list):
-#                     group_tuesday_list = get_special_list(Tuesday, selected_group, form_obj)
-#                     special_day_cal_(ind, i, 'Tuesday', tuesday_limit_count, shift_count_limit_count,
-#                                      group_tuesday_list,
-#                                      form_obj, u_holiday_days=selected_formally_holiday,
-#                                      u_holiday=formally_holiday_limit_count)
-#                     group_thursday_list = get_special_list(Thursday, selected_group, form_obj)
-#                     special_day_cal_(ind, i, 'Thursday', thursday_limit_count, shift_count_limit_count,
-#                                      group_thursday_list,
-#                                      form_obj, u_holiday_days=selected_formally_holiday,
-#                                      u_holiday=formally_holiday_limit_count)
-#                     group_friday_list = get_special_list(Friday, selected_group, form_obj)
-#                     special_day_cal_(ind, i, 'Friday', friday_limit_count, shift_count_limit_count, group_friday_list,
-#                                      form_obj)
-#                     normal_day_cal_(ind, i, normal_limit_count, shift_count_limit_count, form_obj,
-#                                     u_holiday_days=selected_formally_holiday, u_holiday=formally_holiday_limit_count)
-#                 # all_days_of_month = ShiftDay.objects.filter(group=form_obj.group, j_month_num=selected_month,
-#                 # j_year_num=selected_year)
-#                 all_days_of_first_month = ShiftDay.objects.filter(group=form_obj.group,
-#                                                                   j_month_num_first=selected_month_first,
-#                                                                   j_year_num_first=selected_year_first)
-#                 all_days_of_last_month = ShiftDay.objects.filter(group=form_obj.group,
-#                                                                  j_month_num_last=selected_month_last,
-#                                                                  j_year_num_last=selected_year_last)
-#                 # for day in all_days_of_month:
-#                 #     persian_list = []
-#                 #     pp_list = day.night_people_list.split(',')
-#                 #     if pp_list[0] != '':
-#                 #         for pr in pp_list:
-#                 #             persian_list.append(Profile.objects.get(user__username=pr).last_name)
-#                 #     day.night_pr_people_list = ','.join(persian_list)
-#                 #     day.save()
-#                 for day in all_days_of_first_month:
-#                     persian_list = []
-#                     pp_list = day.night_people_list.split(',')
-#                     if pp_list[0] != '':
-#                         for pr in pp_list:
-#                             persian_list.append(Profile.objects.get(user__username=pr).last_name)
-#                     day.night_pr_people_list = ','.join(persian_list)
-#                     day.save()
-#                 for day in all_days_of_last_month:
-#                     persian_list = []
-#                     pp_list = day.night_people_list.split(',')
-#                     if pp_list[0] != '':
-#                         for pr in pp_list:
-#                             persian_list.append(Profile.objects.get(user__username=pr).last_name)
-#                     day.night_pr_people_list = ','.join(persian_list)
-#                     day.save()
-#                 ################################################################################################
-#                 return redirect('/')
-#             else:
-#                 logger.error('form is not valid............')
-#         except Exception as err:
-#             form = ShiftForm()
-#             logger.error(err)
-#             print(err)
-#     else:
-#         form = ShiftForm()
-#     texts = dict()
-#     texts['row'] = KeyValue.row
-#     texts['submit'] = KeyValue.submit
-#     context['texts'] = texts
-#     context['form'] = form
-#     return render(request, 'back/shift_create.html', context)
-
-
 def shift(request, grp_name):
     context = glob_context()
     jalali_now = get_jalali_now()
@@ -335,35 +196,21 @@ def shift_create_tr(request):
             if form.is_valid():
                 start_date = datetime_to_jalali(form.cleaned_data['start_date'])
                 end_date = datetime_to_jalali(form.cleaned_data['end_date'])
-                # selected_year_first = form.cleaned_data['j_year_num_first']
                 selected_year_first = start_date[0]
-                # selected_year_last = form.cleaned_data['j_year_num_last']
                 selected_year_last = end_date[0]
-                # selected_month_first = form.cleaned_data['j_month_num_first']
                 selected_month_first = start_date[1]
-                # selected_month_last = form.cleaned_data['j_month_num_last']
                 selected_month_last = end_date[1]
-                # selected_day_first = form.cleaned_data['j_day_num_first']
                 selected_day_first = start_date[2]
-                # selected_day_last = form.cleaned_data['j_day_num_last']
                 selected_day_last = end_date[2]
-                # selected_formally_holiday = form.cleaned_data['formally_holiday']
                 sel_un_hol_first = form.cleaned_data['formally_holiday_first']
                 sel_un_hol_last = form.cleaned_data['formally_holiday_last']
                 selected_formally_holiday = ['{}/{}'.format(selected_month_first, i) for i in sel_un_hol_first] + \
                                             ['{}/{}'.format(selected_month_last, i) for i in sel_un_hol_last]
                 selected_group = ShiftGroup.objects.get(owner__username=request.user)
-                previous_month = get_previous_month(selected_year_first, selected_month_first)
-                if Shift.objects.filter(group=selected_group).exists():
-                    if not Shift.objects.filter(group=selected_group, j_month_num_first=previous_month[1],
-                                                j_year_num_first=previous_month[0]).exists():
-                        printer(
-                            'Selected date ({}-{}) is incorrect. there isn\'t previous month of your choice.'.format(
-                                selected_year_first, selected_month_first))
-                        return redirect('/')
-                if Shift.objects.filter(group=selected_group, j_month_num_first=selected_month_first,
-                                        j_year_num_first=selected_year_first).exists():
-                    printer('duplicate shift!!!!!!')
+                previous_day = jalali_timedelta(selected_year_first, selected_month_first, selected_day_first, -1)
+                if not ShiftDay.objects.filter(j_year_num=previous_day[0], j_month_num=previous_day[1],
+                                               j_day_num=previous_day[2]).exists():
+                    printer('There is a gap between your chosen dates. please select correct dates.')
                     return redirect('/')
                 form_obj = form.save(commit=False)
                 form_obj.j_year_num_first = selected_year_first
@@ -375,7 +222,6 @@ def shift_create_tr(request):
                 form_obj.people_list = ','.join(
                     list(Profile.objects.filter(group=selected_group, in_shift=True).values_list('user__username',
                                                                                                  flat=True)))
-                # list_of_days = return_day_names(selected_year, selected_month)
                 list_of_days = return_day_names_of_period(
                     jalali_year_first=selected_year_first,
                     jalali_year_last=selected_year_last,
@@ -406,38 +252,28 @@ def shift_create_tr(request):
                 def calc():
                     for ind, i in enumerate(days_list):
                         group_tuesday_list = get_special_list(Tuesday, selected_group, form_obj)
-                        special_day_cal_(ind, i, 'Tuesday', tuesday_limit_count, shift_count_limit_count,
+                        special_day_cal_(ind, i, 'Tue', tuesday_limit_count, shift_count_limit_count,
                                          group_tuesday_list,
                                          form_obj, u_holiday_days=selected_formally_holiday,
                                          u_holiday=formally_holiday_limit_count)
                         group_thursday_list = get_special_list(Thursday, selected_group, form_obj)
-                        special_day_cal_(ind, i, 'Thursday', thursday_limit_count, shift_count_limit_count,
+                        special_day_cal_(ind, i, 'Thu', thursday_limit_count, shift_count_limit_count,
                                          group_thursday_list,
                                          form_obj, u_holiday_days=selected_formally_holiday,
                                          u_holiday=formally_holiday_limit_count)
                         group_friday_list = get_special_list(Friday, selected_group, form_obj)
-                        special_day_cal_(ind, i, 'Friday', friday_limit_count, shift_count_limit_count,
+                        special_day_cal_(ind, i, 'Fri', friday_limit_count, shift_count_limit_count,
                                          group_friday_list,
                                          form_obj)
                         normal_day_cal_(ind, i, normal_limit_count, shift_count_limit_count, form_obj,
                                         u_holiday_days=selected_formally_holiday,
                                         u_holiday=formally_holiday_limit_count)
-                    # all_days_of_month = ShiftDay.objects.filter(group=form_obj.group, j_month_num=selected_month,
-                    #                                             j_year_num=selected_year)
                     all_days_of_first_month = ShiftDay.objects.filter(group=form_obj.group,
                                                                       j_month_num=selected_month_first,
                                                                       j_year_num=selected_year_first)
                     all_days_of_last_month = ShiftDay.objects.filter(group=form_obj.group,
                                                                      j_month_num=selected_month_last,
                                                                      j_year_num=selected_year_last)
-                    # for day in all_days_of_month:
-                    #     persian_list = []
-                    #     pp_list = day.night_people_list.split(',')
-                    #     if pp_list[0] != '':
-                    #         for pr in pp_list:
-                    #             persian_list.append(Profile.objects.get(user__username=pr).last_name)
-                    #     day.night_pr_people_list = ','.join(persian_list)
-                    #     day.save()
                     for day in all_days_of_first_month:
                         persian_list = []
                         pp_list = day.night_people_list.split(',')
@@ -466,7 +302,6 @@ def shift_create_tr(request):
             logger.error(err)
             print(err)
     else:
-        # form = ShiftForm(user=request.user)
         form = ShiftForm()
     texts = dict()
     texts['row'] = KeyValue.row
@@ -474,17 +309,3 @@ def shift_create_tr(request):
     context['texts'] = texts
     context['form'] = form
     return render(request, 'back/shift_create.html', context)
-
-# def my_view(request):
-#     context = glob_context()
-#     jalali_join = datetime2jalali(request.user.date_joined).strftime('%y/%m/%d _ %H:%M:%S')
-#     print(jalali_join)
-#     context['jalali_join'] = jalali_join
-#     context['form'] = testForm
-#     if request.method == 'POST':
-#         form = testForm(request.POST)
-#         if form.is_valid():
-#             print('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%')
-#             print(form.cleaned_data['dat'])
-#             print('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%')
-#     return render(request, 'back/test.html', context)

@@ -26,6 +26,7 @@ body {
 
 .date-picker-form * {
     font-family: 'shabnam', Arial, sans-serif;
+    border-radius: 7px;
 }
 
 .log-in-out a {
@@ -88,4 +89,9 @@ a:hover {
 
 .ui-datepicker-calendar {
     color: black;
+}
+
+
+.month_field option {
+    width: inherit;
 }

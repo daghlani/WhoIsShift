@@ -22,9 +22,9 @@
                 </tr>
                 </thead>
                 {% for row in days %}
-                    <tr {% if row.type|type_splitter == "Friday" %}style="background-color: #b10000;"
+                    <tr {% if row.type|type_splitter == "Fri" %}style="background-color: #b10000;"
                         {% elif row.is_formally_holiday %}style="background-color: #600a0a;"
-                        {% elif row.type|type_splitter == "Thursday" %}style="background-color: #de991c;"{% endif %}>
+                        {% elif row.type|type_splitter == "Thu" %}style="background-color: #de991c;"{% endif %}>
                         <td>{{ forloop.counter|l10n_num:"fa" }}</td>
                         <td>{{ row.type|type_splitter|weekd:"fa" }}</td>
                         <td>{{ row.j_year_num|l10n_num:"fa" }} - {{ row.j_month_num|l10n_num:"fa" }}

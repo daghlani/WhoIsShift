@@ -113,7 +113,8 @@ def dates_between_as_name(start_date, end_date):
 
 def dates_between_as_name_date(start_date, end_date):
     delta = end_date - start_date  # as timedelta
-    days = [(start_date + timedelta(days=i)).strftime("%A__%Y/%m/%d") for i in range(delta.days + 1)]
+    # days = [(start_date + timedelta(days=i)).strftime("%A__%Y/%m/%d") for i in range(delta.days + 1)]
+    days = [(start_date + timedelta(days=i)).strftime("%a__%Y/%m/%d") for i in range(delta.days + 1)]
     return days
 
 

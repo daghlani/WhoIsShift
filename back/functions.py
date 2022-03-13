@@ -1,4 +1,5 @@
 from back.models import ShiftDay, Profile
+from config.config import PRI_WEEK_MAP
 from back import models
 from django.db.models import F
 from tools.jalali import jalali_timedelta
@@ -16,19 +17,19 @@ def printer(s, side_space=3, side_str=6, char='#'):
     print(_str)
 
 
-def index_changer(first, second, list):
-    in_f = list[first]
-    in_s = list[second]
-    list[first] = in_s
-    list[second] = in_f
-    return list
+def index_changer(first, second, list_):
+    in_f = list_[first]
+    in_s = list_[second]
+    list_[first] = in_s
+    list_[second] = in_f
+    return list_
 
 
 def get_class(kls):
-    return getattr(models, kls)
+    return getattr(models, PRI_WEEK_MAP[kls.upper()])
 
 
-def check_last_n_days(y, m, d, group, name, shift_count_num, n=2):
+def check_last_n_days(y, m, d, group, name,  shift_count_num, n=2):
     print('name: ', name)
     counter = 0
     if Profile.objects.get(user__username=name).shift_count >= shift_count_num:
@@ -37,6 +38,7 @@ def check_last_n_days(y, m, d, group, name, shift_count_num, n=2):
         counter += 1
         delta_day = jalali_timedelta(y, m, d, -1 * counter)
         try:
+            print(group, delta_day)
             obj_ = ShiftDay.objects.get(group=group, j_day_num=delta_day[2], j_month_num=delta_day[1],
                                         j_year_num=delta_day[0])
             night_people = obj_.night_people_list
@@ -52,19 +54,22 @@ def check_last_n_days(y, m, d, group, name, shift_count_num, n=2):
     return True
 
 
+def check_shift_day_exists(type_, grp):
+    return ShiftDay.objects.filter(type='{}__{}'.format(type_, grp.prefix)).exists()
+
+
 def special_day_cal_(ind, j, d_type, d_count, group_shift_count, people_group_type_list, form_obj, u_holiday_days=None,
                      u_holiday=None):
-    # if j == d_type:
+    group = form_obj.group
+    if check_shift_day_exists(j, group):
+        printer('type {} exists'.format('{}__{}'.format(j, group.prefix)))
+        return
     j_name, j_date = j.split('__')
     greg_j_date_y, greg_j_date_m, greg_j_date_d = j_date.split('/')
     y, m, d = gregorian_to_jalali(int(greg_j_date_y), int(greg_j_date_m), int(greg_j_date_d))
     if j_name == d_type:
         i_people = []
         unavailable_people = []
-        # y = form_obj.j_year_num
-        # m = form_obj.j_month_num
-        # d = ind + 1
-        group = form_obj.group
         is_formal_ = False
         if u_holiday is not None and u_holiday_days is not None:
             print('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
@@ -86,12 +91,10 @@ def special_day_cal_(ind, j, d_type, d_count, group_shift_count, people_group_ty
                     i_people.append(a)
                     Profile.objects.filter(group=group, user__username=person).update(shift_count=F('shift_count') + 1)
                     people_group_type_list.append(a)
-                    # print(i_people)
                     break
                 else:
                     print('changing list......')
                     print('list was: ', people_group_type_list)
-                    # index_changer(0,1,people_group_type_list)
                     u = people_group_type_list.pop(0)
                     unavailable_people.append(u)
                     print('unavailable_people list is: ', unavailable_people)
@@ -107,7 +110,7 @@ def special_day_cal_(ind, j, d_type, d_count, group_shift_count, people_group_ty
             group=group,
             night_people_list=','.join(i_people),
             day_people_list='',
-            type=d_type,
+            type='{}__{}'.format(j, group.prefix),
             is_formally_holiday=is_formal_,
             day_responsible=None,
             night_responsible=None
@@ -124,25 +127,17 @@ def special_day_cal_(ind, j, d_type, d_count, group_shift_count, people_group_ty
 
 
 def normal_day_cal_(ind, j, d_count, group_shift_count, form_obj, u_holiday_days=None, u_holiday=None):
-    # if j not in ['Tuesday', 'Thursday', 'Friday']:
+    group = form_obj.group
+    people_list = form_obj.people_list.split(',')
     j_name, j_date = j.split('__')
     greg_j_date_y, greg_j_date_m, greg_j_date_d = j_date.split('/')
-    print(greg_j_date_y, greg_j_date_m, greg_j_date_d)
+    if check_shift_day_exists(j, group):
+        printer('type {} exists'.format(j))
+        return
     y, m, d = gregorian_to_jalali(int(greg_j_date_y), int(greg_j_date_m), int(greg_j_date_d))
-    if j_name not in ['Tuesday', 'Thursday', 'Friday']:
-        people_list = form_obj.people_list.split(',')
+    if j_name not in ['Tue', 'Thu', 'Fri']:
         i_people = []
         unavailable_people = []
-        # y = form_obj.j_year_num
-        # m = form_obj.j_month_num
-        # d = ind + 1
-        group = form_obj.group
-        # if u_holiday is not None and u_holiday_days is not None:
-        #     print('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
-        #     print(d, u_holiday, u_holiday_days)
-        #     if str(d) in u_holiday_days:
-        #         d_count = u_holiday
-        #         print('d_count is: ', d_count)
         is_formal_ = False
         if u_holiday is not None and u_holiday_days is not None:
             print('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
@@ -183,7 +178,7 @@ def normal_day_cal_(ind, j, d_count, group_shift_count, form_obj, u_holiday_days
             group=group,
             night_people_list=','.join(i_people),
             day_people_list='',
-            type=j,
+            type='{}__{}'.format(j, group.prefix),
             is_formally_holiday=is_formal_,
             day_responsible=None,
             night_responsible=None
