@@ -65,7 +65,7 @@ a:hover {
     width: 250px;
 }
 
-.form-group-uncommon {
+.form-group-formally {
     width: calc(3 * 245px);
 }
 
@@ -80,4 +80,12 @@ a:hover {
 .jalali_date-date {
     width: 226px;
 
+}
+
+#ui-datepicker-div * {
+    font-family: 'shabnam', Arial, sans-serif;
+}
+
+.ui-datepicker-calendar {
+    color: black;
 }

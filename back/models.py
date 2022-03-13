@@ -19,7 +19,7 @@ class ShiftGroup(models.Model):
     tuesday_req = models.IntegerField(verbose_name=KeyValue.tuesday_req, default=3)
     thursday_req = models.IntegerField(verbose_name=KeyValue.thursday_req, default=2)
     friday_req = models.IntegerField(verbose_name=KeyValue.friday_req, default=1)
-    uncommon_holiday_req = models.IntegerField(verbose_name=KeyValue.uncommon_holiday_req, default=1)
+    formally_holiday_req = models.IntegerField(verbose_name=KeyValue.formally_holiday_req, default=1)
     shift_count_limit = models.IntegerField(verbose_name=KeyValue.shift_count_limit, default=5)
     phone_number = models.IntegerField(verbose_name=KeyValue.shift_count_limit, default=9090)
 
@@ -129,8 +129,8 @@ class Shift(models.Model):
     people_list = models.TextField()
     days_count = models.IntegerField()
     days_name = models.TextField()
-    uncommon_holiday_first = models.TextField(blank=True, null=True)
-    uncommon_holiday_last = models.TextField(blank=True, null=True)
+    formally_holiday_first = models.TextField(blank=True, null=True)
+    formally_holiday_last = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return '{} - {} - {}'.format(str(self.group), str(self.j_year_num_first), str(self.j_month_num_first))
@@ -148,6 +148,7 @@ class ShiftDay(models.Model):
     day_people_list = models.TextField(null=True, blank=True)
     day_pr_people_list = models.TextField(null=True, blank=True)
     type = models.CharField(max_length=20)
+    is_formally_holiday = models.BooleanField(default=False)
     day_responsible = models.CharField(max_length=30, default=None, null=True)
     night_responsible = models.CharField(max_length=30, default=None, null=True)
 

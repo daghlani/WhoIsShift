@@ -65,10 +65,12 @@ def special_day_cal_(ind, j, d_type, d_count, group_shift_count, people_group_ty
         # m = form_obj.j_month_num
         # d = ind + 1
         group = form_obj.group
+        is_formal_ = False
         if u_holiday is not None and u_holiday_days is not None:
             print('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
             print(d, u_holiday, u_holiday_days)
             if str('{}/{}'.format(m, d)) in u_holiday_days:
+                is_formal_ = True
                 d_count = u_holiday
                 print('d_count is: ', d_count)
         print('d_count is: ', d_count)
@@ -106,6 +108,7 @@ def special_day_cal_(ind, j, d_type, d_count, group_shift_count, people_group_ty
             night_people_list=','.join(i_people),
             day_people_list='',
             type=d_type,
+            is_formally_holiday=is_formal_,
             day_responsible=None,
             night_responsible=None
         )
@@ -140,10 +143,12 @@ def normal_day_cal_(ind, j, d_count, group_shift_count, form_obj, u_holiday_days
         #     if str(d) in u_holiday_days:
         #         d_count = u_holiday
         #         print('d_count is: ', d_count)
+        is_formal_ = False
         if u_holiday is not None and u_holiday_days is not None:
             print('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
             print(d, u_holiday, u_holiday_days)
             if str('{}/{}'.format(m, d)) in u_holiday_days:
+                is_formal_ = True
                 d_count = u_holiday
                 print('d_count is: ', d_count)
         print('d_count is: ', d_count)
@@ -179,6 +184,7 @@ def normal_day_cal_(ind, j, d_count, group_shift_count, form_obj, u_holiday_days
             night_people_list=','.join(i_people),
             day_people_list='',
             type=j,
+            is_formally_holiday=is_formal_,
             day_responsible=None,
             night_responsible=None
         )

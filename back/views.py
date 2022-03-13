@@ -52,6 +52,16 @@ def home(request):
     return HttpResponse(html_template.render(context, request))
 
 
+@login_required()
+def profile(request, pk):
+    context = glob_context()
+    user_data = Profile.objects.get(user__id=pk)
+    bool_dict = {'True': 'ok', 'False': 'no'}
+    context.update(user_data=user_data)
+    context.update(bool_dict=bool_dict)
+    return render(request, 'back/profile.html', context)
+
+
 def read_excel(list_of_columns, filepath):
     data = pd.read_excel(filepath)
     df = pd.DataFrame(data, columns=list_of_columns).replace(np.nan, '--')
@@ -141,6 +151,7 @@ def file_add(request):
     context['form'] = form
     return render(request, 'back/file_add.html', context)
 
+
 #
 # @check_grp_owner
 # def shift_create(request):
@@ -163,10 +174,10 @@ def file_add(request):
 #                 selected_day_first = start_date[2]
 #                 # selected_day_last = form.cleaned_data['j_day_num_last']
 #                 selected_day_last = end_date[2]
-#                 # selected_uncommon_holiday = form.cleaned_data['uncommon_holiday']
-#                 sel_un_hol_first = form.cleaned_data['uncommon_holiday_first']
-#                 sel_un_hol_last = form.cleaned_data['uncommon_holiday_last']
-#                 selected_uncommon_holiday = ['{}/{}'.format(selected_month_first, i) for i in sel_un_hol_first] + \
+#                 # selected_formally_holiday = form.cleaned_data['formally_holiday']
+#                 sel_un_hol_first = form.cleaned_data['formally_holiday_first']
+#                 sel_un_hol_last = form.cleaned_data['formally_holiday_last']
+#                 selected_formally_holiday = ['{}/{}'.format(selected_month_first, i) for i in sel_un_hol_first] + \
 #                                             ['{}/{}'.format(selected_month_last, i) for i in sel_un_hol_last]
 #                 selected_group = ShiftGroup.objects.get(owner__username=request.user)
 #                 previous_month = get_previous_month(selected_year_first, selected_month_first)
@@ -204,7 +215,7 @@ def file_add(request):
 #                 tuesday_limit_count = selected_group.tuesday_req
 #                 thursday_limit_count = selected_group.thursday_req
 #                 friday_limit_count = selected_group.friday_req
-#                 uncommon_holiday_limit_count = selected_group.uncommon_holiday_req
+#                 formally_holiday_limit_count = selected_group.formally_holiday_req
 #                 shift_count_limit_count = selected_group.shift_count_limit
 #
 #                 Profile.objects.filter(group=form_obj.group).update(shift_count=0)
@@ -217,18 +228,18 @@ def file_add(request):
 #                     group_tuesday_list = get_special_list(Tuesday, selected_group, form_obj)
 #                     special_day_cal_(ind, i, 'Tuesday', tuesday_limit_count, shift_count_limit_count,
 #                                      group_tuesday_list,
-#                                      form_obj, u_holiday_days=selected_uncommon_holiday,
-#                                      u_holiday=uncommon_holiday_limit_count)
+#                                      form_obj, u_holiday_days=selected_formally_holiday,
+#                                      u_holiday=formally_holiday_limit_count)
 #                     group_thursday_list = get_special_list(Thursday, selected_group, form_obj)
 #                     special_day_cal_(ind, i, 'Thursday', thursday_limit_count, shift_count_limit_count,
 #                                      group_thursday_list,
-#                                      form_obj, u_holiday_days=selected_uncommon_holiday,
-#                                      u_holiday=uncommon_holiday_limit_count)
+#                                      form_obj, u_holiday_days=selected_formally_holiday,
+#                                      u_holiday=formally_holiday_limit_count)
 #                     group_friday_list = get_special_list(Friday, selected_group, form_obj)
 #                     special_day_cal_(ind, i, 'Friday', friday_limit_count, shift_count_limit_count, group_friday_list,
 #                                      form_obj)
 #                     normal_day_cal_(ind, i, normal_limit_count, shift_count_limit_count, form_obj,
-#                                     u_holiday_days=selected_uncommon_holiday, u_holiday=uncommon_holiday_limit_count)
+#                                     u_holiday_days=selected_formally_holiday, u_holiday=formally_holiday_limit_count)
 #                 # all_days_of_month = ShiftDay.objects.filter(group=form_obj.group, j_month_num=selected_month,
 #                 # j_year_num=selected_year)
 #                 all_days_of_first_month = ShiftDay.objects.filter(group=form_obj.group,
@@ -293,8 +304,8 @@ def shift(request, grp_name):
                 selected_month = form.cleaned_data['month']
                 selected_year = form.cleaned_data['year']
         all_days = list(ShiftDay.objects.filter(group=grp, j_year_num=selected_year, j_month_num=selected_month).values(
-            'type', 'j_day_num', 'j_month_num', 'j_year_num', 'night_people_list', 'day_people_list', 'day_responsible',
-            'night_responsible', 'night_pr_people_list', 'day_pr_people_list'
+            'type', 'is_formally_holiday', 'j_day_num', 'j_month_num', 'j_year_num', 'night_people_list',
+            'day_people_list', 'day_responsible', 'night_responsible', 'night_pr_people_list', 'day_pr_people_list'
         ))
         context['days'] = all_days
         texts = dict()
@@ -336,10 +347,10 @@ def shift_create_tr(request):
                 selected_day_first = start_date[2]
                 # selected_day_last = form.cleaned_data['j_day_num_last']
                 selected_day_last = end_date[2]
-                # selected_uncommon_holiday = form.cleaned_data['uncommon_holiday']
-                sel_un_hol_first = form.cleaned_data['uncommon_holiday_first']
-                sel_un_hol_last = form.cleaned_data['uncommon_holiday_last']
-                selected_uncommon_holiday = ['{}/{}'.format(selected_month_first, i) for i in sel_un_hol_first] + \
+                # selected_formally_holiday = form.cleaned_data['formally_holiday']
+                sel_un_hol_first = form.cleaned_data['formally_holiday_first']
+                sel_un_hol_last = form.cleaned_data['formally_holiday_last']
+                selected_formally_holiday = ['{}/{}'.format(selected_month_first, i) for i in sel_un_hol_first] + \
                                             ['{}/{}'.format(selected_month_last, i) for i in sel_un_hol_last]
                 selected_group = ShiftGroup.objects.get(owner__username=request.user)
                 previous_month = get_previous_month(selected_year_first, selected_month_first)
@@ -383,7 +394,7 @@ def shift_create_tr(request):
                 tuesday_limit_count = selected_group.tuesday_req
                 thursday_limit_count = selected_group.thursday_req
                 friday_limit_count = selected_group.friday_req
-                uncommon_holiday_limit_count = selected_group.uncommon_holiday_req
+                formally_holiday_limit_count = selected_group.formally_holiday_req
                 shift_count_limit_count = selected_group.shift_count_limit
 
                 Profile.objects.filter(group=form_obj.group).update(shift_count=0)
@@ -397,20 +408,20 @@ def shift_create_tr(request):
                         group_tuesday_list = get_special_list(Tuesday, selected_group, form_obj)
                         special_day_cal_(ind, i, 'Tuesday', tuesday_limit_count, shift_count_limit_count,
                                          group_tuesday_list,
-                                         form_obj, u_holiday_days=selected_uncommon_holiday,
-                                         u_holiday=uncommon_holiday_limit_count)
+                                         form_obj, u_holiday_days=selected_formally_holiday,
+                                         u_holiday=formally_holiday_limit_count)
                         group_thursday_list = get_special_list(Thursday, selected_group, form_obj)
                         special_day_cal_(ind, i, 'Thursday', thursday_limit_count, shift_count_limit_count,
                                          group_thursday_list,
-                                         form_obj, u_holiday_days=selected_uncommon_holiday,
-                                         u_holiday=uncommon_holiday_limit_count)
+                                         form_obj, u_holiday_days=selected_formally_holiday,
+                                         u_holiday=formally_holiday_limit_count)
                         group_friday_list = get_special_list(Friday, selected_group, form_obj)
                         special_day_cal_(ind, i, 'Friday', friday_limit_count, shift_count_limit_count,
                                          group_friday_list,
                                          form_obj)
                         normal_day_cal_(ind, i, normal_limit_count, shift_count_limit_count, form_obj,
-                                        u_holiday_days=selected_uncommon_holiday,
-                                        u_holiday=uncommon_holiday_limit_count)
+                                        u_holiday_days=selected_formally_holiday,
+                                        u_holiday=formally_holiday_limit_count)
                     # all_days_of_month = ShiftDay.objects.filter(group=form_obj.group, j_month_num=selected_month,
                     #                                             j_year_num=selected_year)
                     all_days_of_first_month = ShiftDay.objects.filter(group=form_obj.group,
@@ -463,9 +474,6 @@ def shift_create_tr(request):
     context['texts'] = texts
     context['form'] = form
     return render(request, 'back/shift_create.html', context)
-
-
-# ToDo Make a Profile page
 
 # def my_view(request):
 #     context = glob_context()

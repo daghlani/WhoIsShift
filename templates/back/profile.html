@@ -3,9 +3,91 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-    <table>
-
+<div class="pro_div" dir="rtl">
+    <!--<table style="height: 323px; width: 502.5px;">-->
+        <!--<tbody>-->
+        <!--<tr style="height: 220.75px;">-->
+            <!--<td style="width: 571.5px; height: 220.75px;" colspan="6">-->
+                <!--<div class="pro_pic">-->
+                    <!--<div><img src="{{ user_data.avatar.url }}" alt=""></div>-->
+                <!--</div>-->
+            <!--</td>-->
+        <!--</tr>-->
+        <!--<tr style="height: 73px;">-->
+            <!--<td style="width: 102px; height: 73px;">گروه</td>-->
+            <!--<td style="width: 102px; height: 73px;">{{ user_data.group }}</td>-->
+            <!--<td style="width: 102px; height: 73px;">نام</td>-->
+            <!--<td style="width: 102px; height: 73px;">{{ user_data.name }}</td>-->
+            <!--<td style="width: 102px; height: 73px;">نام خانوادگی</td>-->
+            <!--<td style="width: 102px; height: 73px;">{{ user_data.last_name }}</td>-->
+        <!--</tr>-->
+        <!--<tr style="height: 73px;">-->
+            <!--<td style="width: 102px; height: 73px;">شیفت</td>-->
+            <!--<td style="width: 102px; height: 73px;">{{ user_data.in_shift }}</td>-->
+            <!--<td style="width: 102px; height: 73px;">شیفت روز</td>-->
+            <!--<td style="width: 102px; height: 73px;">{{ user_data.in_day_shift }}</td>-->
+            <!--<td style="width: 102px; height: 73px;">شیفت شب</td>-->
+            <!--<td style="width: 102px; height: 73px;">{{ user_data.in_night_shift }}</td>-->
+        <!--</tr>-->
+        <!--<tr style="height: 73px;">-->
+            <!--<td style="width: 66px; height: 73px;">درباره</td>-->
+            <!--<td style="width: 505.5px; height: 73px;" colspan="5">{{ user_data.bio }}</td>-->
+        <!--</tr>-->
+        <!--</tbody>-->
+    <!--</table>-->
+    <table style="height: 323px; width: 502.5px; margin-left: auto; margin-right: auto;" border="5">
+        <caption>&nbsp;</caption>
+        <tbody>
+        <tr style="height: 220.75px;">
+            <td style="width: 571.5px; height: 220.75px; text-align: center;" colspan="6">
+                <div class="pro_pic">
+                    <img src="{{ user_data.avatar.url }}" alt="">
+                </div>
+            </td>
+            </td>
+        </tr>
+        <tr style="height: 73px; text-align: center;">
+            <td class="s_td" style="width: 102px; height: 73px;">گروه</td>
+            <td class="d_td" style="width: 102px; height: 73px;">{{ user_data.group }}</td>
+            <td class="s_td" style="width: 102px; height: 73px;">نام</td>
+            <td class="d_td" style="width: 102px; height: 73px;">{{ user_data.name }}</td>
+            <td class="s_td" style="width: 102px; height: 73px;">نام خانوادگی</td>
+            <td class="d_td" style="width: 102px; height: 73px;">{{ user_data.last_name }}</td>
+        </tr>
+        <tr style="height: 73px; text-align: center;">
+            <td class="s_td" style="width: 102px; height: 73px;">شیفت</td>
+            <td class="d_td" style="width: 102px; height: 73px;">{% if user_data.in_shift %}yes{% else %}no{% endif %}</td>
+            <td class="s_td" style="width: 102px; height: 73px;">شیفت روز</td>
+            <td class="d_td" style="width: 102px; height: 73px;">{% if user_data.in_day_shift %}yes{% else %}no{% endif %}</td>
+            <td class="s_td" style="width: 102px; height: 73px;">شیفت شب</td>
+            <td class="d_td" style="width: 102px; height: 73px;">{% if user_data.in_night_shift %}yes{% else %}no{% endif %}</td>
+        </tr>
+        <tr style="height: 73px; text-align: center;">
+            <td class="s_td" style="width: 66px; height: 73px;">درباره</td>
+            <td class="d_td" style="width: 505.5px; height: 73px;" colspan="5">{{ user_data.bio }}</td>
+        </tr>
+        </tbody>
     </table>
+    <style>
+        .pro_div {
+            width: 50%;
+            margin: auto;
+        }
+        .pro_pic img {
+            border-radius: 35%;
+            width: 160px
+        }
+        td {
+            border-width: 1px;
+        }
+        .s_td {
+            background-color: #373737;
+        }
+        .d_td {
+            background-color: #131731;
+        }
+    </style>
+</div>
 {% endblock %}
 {% block javascripts %}
 <script src="{% static 'js/sortable.js' %}"></script>
