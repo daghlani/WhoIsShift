@@ -9,6 +9,8 @@ night_operator = {'en': 'night_operator', 'fa': 'شیفت شب'}
 # default_excel_presence_columns = [days_of_week['fa'], date['fa'], day_operator['fa'], night_operator['fa']]
 
 
+owner_perms = ['Can add shift', 'Can delete shift', 'Can view shift', 'can_see_management', 'can_add_shift_on_page']
+
 WEEK_MAP = dict(
     Saturday='شنبه',
     Sunday='یکشنبه',
