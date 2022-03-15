@@ -19,7 +19,7 @@ from threading import Thread
 from back.logger import logger
 # from django.contrib.auth.models import Group, Permission
 
-perms_init()
+group_init()
 
 # new_group, created = Group.objects.get_or_create(name='owners')
 # perm1 = Permission.objects.get(name='Can add shift')

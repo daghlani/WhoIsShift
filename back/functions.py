@@ -8,7 +8,7 @@ from tools.jalali import gregorian_to_jalali
 from django.contrib.auth.models import Group, Permission
 
 
-def perms_init():
+def group_init():
     for perm in owner_perms:
         new_group, created = Group.objects.get_or_create(name='owners')
         permission = Permission.objects.get(name=perm)

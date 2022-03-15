@@ -3,9 +3,10 @@ from back.models import ShiftGroup, FileObj, ExcelColumns, Profile, Shift, Tuesd
 from back.forms import ShiftForm_factory
 
 
-# from  django.contrib.auth.models  import  Group  # new
-# #...
-# admin.site.unregister(Group)  # new
+admin.AdminSite.site_header = 'WhoIsShift'
+admin.AdminSite.index_title = 'WhoIsShift Administration'
+admin.AdminSite.site_title = 'WhoIsShift'
+
 
 class FileObjAdmin(admin.ModelAdmin):
     list_display = ('__str__', 'group_owner',)
@@ -37,14 +38,29 @@ class ProfileAdmin(admin.ModelAdmin):
 
 class ShiftDayAdmin(admin.ModelAdmin):
     list_display = ('id', 'type', 'j_year_num', 'j_month_num', 'j_day_num', 'group', 'night_pr_people_list')
-    readonly_fields = ('index_num', 'shift', 'group', 'type', 'j_year_num', 'j_month_num', 'j_day_num',)
+    readonly_fields = (
+        'index_num', 'shift', 'group', 'type', 'j_year_num', 'j_month_num', 'j_day_num', 'is_formally_holiday',)
     search_fields = list_display
     list_filter = ('group', 'j_year_num', 'j_month_num')
+
+    # To make limitation for non super users to see only shifts of yourself.
+    def get_queryset(self, request):
+        qs = super(ShiftDayAdmin, self).get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        return qs.filter(group=ShiftGroup.objects.get(owner__username=request.user))
 
 
 class SpecialDayAdmin(admin.ModelAdmin):
     list_display = ('group', 'people_list')
     readonly_fields = ('group',)
+
+    # To make limitation for non super users to see only shifts of yourself.
+    def get_queryset(self, request):
+        qs = super(SpecialDayAdmin, self).get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        return qs.filter(group=ShiftGroup.objects.get(owner__username=request.user))
 
 
 class ShiftAdmin(admin.ModelAdmin):
@@ -56,7 +72,6 @@ class ShiftAdmin(admin.ModelAdmin):
     # To make limitation for non super users to see only shifts of yourself.
     def get_queryset(self, request):
         qs = super(ShiftAdmin, self).get_queryset(request)
-        print(request.user)
         if request.user.is_superuser:
             return qs
         return qs.filter(group=ShiftGroup.objects.get(owner__username=request.user))
