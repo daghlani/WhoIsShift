@@ -24,14 +24,14 @@ WEEK_MAP = dict(
     Monday='دوشنبه',
     Tuesday='سه‌شنبه',
     Wednesday='چهارشنبه',
-    Thursday='پنجشبنه',
+    Thursday='پنجشنه',
     Friday='جمعه',
     SAT='شنبه',
     SUN='یکشنبه',
     MON='دوشنبه',
     TUE='سه‌شنبه',
     WED='چهارشنبه',
-    THU='پنجشبنه',
+    THU='پنجشنه',
     FRI='جمعه',
 )
 PRI_WEEK_MAP = dict(

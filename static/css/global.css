@@ -24,9 +24,14 @@ body {
     text-decoration: none;
 }
 
+.date-picker-form {
+    margin-right: 15px;
+}
+
 .date-picker-form * {
     font-family: 'shabnam', Arial, sans-serif;
-    border-radius: 7px;
+    /*border-radius: 10px 25px;*/
+    border-radius: 10px;
 }
 
 .log-in-out a {
@@ -51,6 +56,7 @@ body {
     /*width: 1524px;*/
     margin-left: auto;
     margin-right: auto;
+    /*box-shadow: 10px -1px 40px #00ffe3;*/
     box-shadow: 10px -1px 40px #00ffe3;
 }
 
@@ -75,7 +81,7 @@ a:hover {
 }
 
 .form-btn {
-    margin-left: 30%;
+    margin-left: 34%;
 }
 
 .jalali_date-date {

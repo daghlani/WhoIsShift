@@ -19,22 +19,7 @@ from threading import Thread
 from back.logger import logger
 import itertools
 
-# from django.contrib.auth.models import Group, Permission
-
 group_init()
-
-
-# new_group, created = Group.objects.get_or_create(name='owners')
-# perm1 = Permission.objects.get(name='Can add shift')
-# perm2 = Permission.objects.get(name='Can delete shift')
-# perm3 = Permission.objects.get(name='Can view shift')
-# perm4 = Permission.objects.get(name='can_see_management')
-# perm5 = Permission.objects.get(name='can_add_shift_on_page')
-# new_group.permissions.add(perm1)
-# new_group.permissions.add(perm2)
-# new_group.permissions.add(perm3)
-# new_group.permissions.add(perm4)
-# new_group.permissions.add(perm5)
 
 
 def glob_context():
@@ -304,6 +289,7 @@ def shift_create_tr(request):
                                 persian_list.append(ls_name if ls_name != ' ' else pr)
                         day.night_pr_people_list = ','.join(persian_list)
                         day.save()
+
                 x = Thread(target=calc)
                 x.start()
                 ################################################################################################
