@@ -2,6 +2,7 @@
 *.sqlite3
 *.log
 *.jpg
+*.jpeg
 *.xlsx
 
 !default.jpg

@@ -17,9 +17,12 @@ from back.decorator import check_grp_owner
 from back.functions import *
 from threading import Thread
 from back.logger import logger
+import itertools
+
 # from django.contrib.auth.models import Group, Permission
 
 group_init()
+
 
 # new_group, created = Group.objects.get_or_create(name='owners')
 # perm1 = Permission.objects.get(name='Can add shift')
@@ -223,8 +226,9 @@ def shift_create_tr(request):
                                             ['{}/{}'.format(selected_month_last, i) for i in sel_un_hol_last]
                 selected_group = ShiftGroup.objects.get(owner__username=request.user)
                 previous_day = jalali_timedelta(selected_year_first, selected_month_first, selected_day_first, -1)
-                if not ShiftDay.objects.filter(j_year_num=previous_day[0], j_month_num=previous_day[1],
-                                               j_day_num=previous_day[2]).exists():
+                if ShiftDay.objects.filter(group=selected_group).exists() and not ShiftDay.objects.filter(
+                        j_year_num=previous_day[0], j_month_num=previous_day[1], j_day_num=previous_day[2],
+                        group=selected_group).exists():
                     printer('There is a gap between your chosen dates. please select correct dates.')
                     return redirect('/')
                 form_obj = form.save(commit=False)
@@ -289,23 +293,17 @@ def shift_create_tr(request):
                     all_days_of_last_month = ShiftDay.objects.filter(group=form_obj.group,
                                                                      j_month_num=selected_month_last,
                                                                      j_year_num=selected_year_last)
-                    for day in all_days_of_first_month:
+                    for day in itertools.chain(all_days_of_first_month, all_days_of_last_month):
                         persian_list = []
                         pp_list = day.night_people_list.split(',')
+                        print(pp_list[0])
                         if pp_list[0] != '':
                             for pr in pp_list:
-                                persian_list.append(Profile.objects.get(user__username=pr).last_name)
+                                ls_name = Profile.objects.get(user__username=pr).last_name
+                                print(ls_name)
+                                persian_list.append(ls_name if ls_name != ' ' else pr)
                         day.night_pr_people_list = ','.join(persian_list)
                         day.save()
-                    for day in all_days_of_last_month:
-                        persian_list = []
-                        pp_list = day.night_people_list.split(',')
-                        if pp_list[0] != '':
-                            for pr in pp_list:
-                                persian_list.append(Profile.objects.get(user__username=pr).last_name)
-                        day.night_pr_people_list = ','.join(persian_list)
-                        day.save()
-
                 x = Thread(target=calc)
                 x.start()
                 ################################################################################################
