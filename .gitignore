@@ -4,5 +4,7 @@
 *.jpg
 *.jpeg
 *.xlsx
+postgres_data
+st
 
 !default.jpg

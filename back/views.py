@@ -19,8 +19,6 @@ from threading import Thread
 from back.logger import logger
 import itertools
 
-group_init()
-
 
 def glob_context():
     ctx = dict()

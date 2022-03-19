@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  wish:
+    image: daghlani/wish:${WISHIMGTAG}
+    container_name: wish
+    volumes:
+      - $PWD/${STATIC_FILES}:/WISH/st
+      - wish_media:/WISH/media
+    expose:
+      - 9001
+    env_file:
+      - .envs/.env.dev
+#      - .envs/.env.prod
+    depends_on:
+      - db
+    networks:
+      wish_network:
+  db:
+    image: postgres:10
+    container_name: db
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - .envs/.env.dev.db
+#      - .envs/.env.prod.db
+    networks:
+      wish_network:
+  web:
+    image: daghlani/wish/web:${WEBIMGTAG}
+    container_name: web
+    volumes:
+      - $PWD/${STATIC_FILES}:/static_volume
+      - wish_media:/media_volume
+    env_file:
+      - .envs/.env.dev
+    #      - .envs/.env.prod
+    ports:
+      - 8000:80
+    depends_on:
+      - wish
+    networks:
+      wish_network:
+networks:
+  wish_network:
+    name: wish_network
+
+volumes:
+  wish_media:
+    name: wish_media

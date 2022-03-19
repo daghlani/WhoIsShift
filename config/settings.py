@@ -71,13 +71,32 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
+
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+def get_ip():
+    import os
+    import socket
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.connect(("172.16.44.4", 80))
+    return s.getsockname()[0]
+
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('POSTGRES_DB_NAME', 'wish'),
+        'USER': os.environ.get('POSTGRES_DB_USER', 'postgres'),
+        'PASSWORD': os.environ.get('POSTGRES_DB_PASSWORD', 'alid'),
+        'HOST': os.environ.get('POSTGRES_HOST_IP', get_ip()),
+        'PORT': os.environ.get('POSTGRES_HOST_PORT', 5432),
     }
 }
 
@@ -139,7 +158,7 @@ LOGGING = {
         'file': {
             'level': 'DEBUG' if DEBUG else 'INFO',
             'class': 'logging.FileHandler',
-            'filename': BASE_DIR / 'whoisshift.log',
+            'filename': BASE_DIR / 'wish.log',
             'formatter': 'verbose',
         },
     },
@@ -180,6 +199,7 @@ STATIC_URL = '/st/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
+STATIC_ROOT = os.path.join(BASE_DIR, 'st')
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
@@ -229,6 +249,3 @@ JALALI_DATE_DEFAULTS = {
         }
     },
 }
-
-
-

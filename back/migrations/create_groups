@@ -1,0 +1,32 @@
+from django.db import models, migrations
+from config.config import owner_perms
+from django.contrib.auth.models import Group, Permission
+
+
+def apply_migration(apps, schema_editor):
+    # Group = apps.get_model('auth', 'Group')
+    new_group, created = Group.objects.get_or_create(name='owners')
+    if created:
+        for perm in owner_perms:
+            print(perm)
+            permission = Permission.objects.get_or_create(codename=perm)
+            new_group.permissions.add(permission)
+
+
+def revert_migration(apps, schema_editor):
+    Group = apps.get_model('auth', 'Group')
+    Group.objects.filter(
+        name__in=[
+            u'owners',
+        ]
+    ).delete()
+
+
+class Migration(migrations.Migration):
+    dependencies = [
+        ('back', '0001_auto_20220316_1352'),
+    ]
+
+    operations = [
+        migrations.RunPython(apply_migration, revert_migration)
+    ]

@@ -1,0 +1,13 @@
+version: '3.4'
+
+services:
+  wish:
+    image: daghlani/wish:${WISHIMGTAG}
+    build:
+      context: .
+      dockerfile: Dockerfile
+  web:
+    image: daghlani/wish/web:${WEBIMGTAG}
+    build:
+      context: .
+      dockerfile: Dockerfile.web

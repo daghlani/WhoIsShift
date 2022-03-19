@@ -12,7 +12,6 @@ min_len_19 = MinLengthValidator(limit_value=19)
 
 
 class ShiftGroup(models.Model):
-    id = models.IntegerField(primary_key=True, auto_created=True, unique=True)
     name = models.CharField(max_length=50, validators=[alphanumeric], null=False, blank=False)
     pr_name = models.CharField(max_length=100, null=True, blank=True)
     prefix = models.CharField(max_length=4, validators=[min_len_4])

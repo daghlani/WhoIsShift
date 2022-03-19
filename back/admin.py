@@ -2,7 +2,6 @@ from django.contrib import admin
 from back.models import ShiftGroup, FileObj, ExcelColumns, Profile, Shift, Tuesday, Thursday, Friday, ShiftDay
 from back.forms import ShiftForm_factory
 
-
 admin.AdminSite.site_header = 'WhoIsShift'
 admin.AdminSite.index_title = 'WhoIsShift Administration'
 admin.AdminSite.site_title = 'WhoIsShift'
@@ -63,6 +62,7 @@ class SpecialDayAdmin(admin.ModelAdmin):
         return qs.filter(group=ShiftGroup.objects.get(owner__username=request.user))
 
 
+@admin.register(Shift)
 class ShiftAdmin(admin.ModelAdmin):
     list_display = ('group', 'j_year_num_first', 'j_month_num_first',)
     readonly_fields = ('days_count', 'days_name',)
@@ -88,7 +88,7 @@ admin.site.register(Profile, ProfileAdmin)
 admin.site.register(ShiftGroup, ShiftGroupAdmin)
 admin.site.register(FileObj, FileObjAdmin)
 admin.site.register(ExcelColumns)
-admin.site.register(Shift, ShiftAdmin)
+# admin.site.register(Shift, ShiftAdmin)
 admin.site.register(Tuesday, SpecialDayAdmin)
 admin.site.register(Thursday, SpecialDayAdmin)
 admin.site.register(Friday, SpecialDayAdmin)

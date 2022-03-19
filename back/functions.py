@@ -1,18 +1,10 @@
 from back.models import ShiftDay, Profile
-from config.config import PRI_WEEK_MAP, owner_perms
+from config.config import PRI_WEEK_MAP
 from back import models
 from django.db.models import F
 from tools.jalali import jalali_timedelta
 from back.logger import logger
 from tools.jalali import gregorian_to_jalali
-from django.contrib.auth.models import Group, Permission
-
-
-def group_init():
-    for perm in owner_perms:
-        new_group, created = Group.objects.get_or_create(name='owners')
-        permission = Permission.objects.get(name=perm)
-        new_group.permissions.add(permission)
 
 
 def printer(s, side_space=3, side_str=6, char='#'):
