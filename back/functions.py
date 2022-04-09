@@ -1,4 +1,4 @@
-from back.models import ShiftDay, Profile
+from back.models import ShiftDay, Profile, ShiftGroup
 from config.config import PRI_WEEK_MAP
 from back import models
 from django.db.models import F
@@ -29,6 +29,38 @@ def get_class(kls):
     return getattr(models, PRI_WEEK_MAP[kls.upper()])
 
 
+# def maintain_day(day_type):
+#     day = ShiftDay.objects.get(type=day_type)
+#     people_of_day = day.night_people_list.split(',')
+#     _type, _date, _grp = day_type.split('__')
+#     grp = ShiftGroup.objects.get(prefix=_grp)
+#     standard_count = grp.get_req_of_type(_type)
+#     if standard_count == len(people_of_day):
+#         return True
+#     else:
+#
+#         available_people = list(Profile.objects.filter(group=grp, shift_count__lt=standard_count).values_list(
+#             'user__username', flat=True))
+#         # remove people who are in available list and already are in people of day.
+#         for i in available_people:
+#             if i in people_of_day:
+#                 available_people.pop(available_people.index(i))
+#
+#         _year, _month, _day = _date.split('/')
+#         for i in list(range(standard_count - len(people_of_day))):
+#             try:
+#                 person = available_people[0]
+#             except Exception as err:
+#                 logger.debug(err)
+#                 continue
+#             if check_last_n_days(_year, _month, _day, grp, person, grp.shift_count_limit):
+#                 people_of_day.append(person)
+#                 available_people.pop(available_people.index(person))
+#                 Profile.objects.filter(group=grp, user__username=person).update(shift_count=F('shift_count') + 1)
+#         day.night_people_list = people_of_day
+#         day.save()
+
+
 # def check_last_n_days(y, m, d, group, name,  shift_count_num, n=2):
 def check_last_n_days(y, m, d, group, name, shift_count_num):
     print('name: ', name)
@@ -56,6 +88,9 @@ def check_last_n_days(y, m, d, group, name, shift_count_num):
     return True
 
 
+# ToDo fix bug of add same person when all people can not add in calculating day, so current person will be added
+#  multiple time, when the day need more than one people
+
 def check_shift_day_exists(type_, grp):
     return ShiftDay.objects.filter(type='{}__{}'.format(type_, grp.prefix)).exists()
 
@@ -81,17 +116,23 @@ def special_day_cal_(ind, j, d_type, d_count, group_shift_count, people_group_ty
                 d_count = u_holiday
                 print('d_count is: ', d_count)
         print('d_count is: ', d_count)
-        print('start people_group_type_list of {} is :-----------------{}---------------------'.format(d_type,
-                                                                                                       people_group_type_list))
+        print('start people_group_type_list of {} is :-----------------{}---------------------'.format(
+            d_type, people_group_type_list))
         for _time in range(d_count):
             print('people of day {} is: {}'.format(d_type, people_group_type_list))
             while True:
                 print('using list is: ', people_group_type_list)
-                person = people_group_type_list[0]
+                try:
+                    person = people_group_type_list[0]
+                except Exception as err:
+                    logger.debug(err)
+                    print(err)
+                    break
                 if check_last_n_days(y=y, m=m, d=d, group=group, name=person, shift_count_num=group_shift_count):
                     a = people_group_type_list.pop(0)
                     i_people.append(a)
-                    Profile.objects.filter(group=group, user__username=person).update(shift_count=F('shift_count') + 1)
+                    Profile.objects.filter(group=group, user__username=person).update(
+                        shift_count=F('shift_count') + 1)
                     people_group_type_list.append(a)
                     break
                 else:
@@ -151,10 +192,13 @@ def normal_day_cal_(ind, j, d_count, group_shift_count, form_obj, u_holiday_days
         print('d_count is: ', d_count)
         print('start people_list is :-----------------{}---------------------'.format(people_list))
         for _time in range(d_count):
-
             while True:
                 print('using list is: ', people_list)
-                person = people_list[0]
+                try:
+                    person = people_list[0]
+                except Exception as err:
+                    logger.debug(err)
+                    break
                 if check_last_n_days(y=y, m=m, d=d, group=group, name=person, shift_count_num=group_shift_count):
                     a = people_list.pop(0)
                     i_people.append(a)

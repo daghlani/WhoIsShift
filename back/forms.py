@@ -5,6 +5,8 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit, Row, Column, Field, Fieldset, Div
 from jalali_date.fields import JalaliDateField, SplitJalaliDateTimeField
 from jalali_date.widgets import AdminJalaliDateWidget, AdminSplitJalaliDateTime
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 
 
 # from django.core.validators import FileExtensionValidator
@@ -14,6 +16,28 @@ from jalali_date.widgets import AdminJalaliDateWidget, AdminSplitJalaliDateTime
 # class UploadExcelForm(forms.Form):
 #     excel_file = forms.FileField(required=True, label='Excel File',
 #                                  validators=[FileExtensionValidator(allowed_extensions=[excel_file_extension])])
+
+
+class SignUpForm(UserCreationForm):
+    def __init__(self, *args, **kwargs):
+        super(SignUpForm, self).__init__(*args, **kwargs)
+        self.fields['username'].label = KeyValue.username
+        self.fields['password1'].label = KeyValue.password1
+        self.fields['password2'].label = KeyValue.password2
+
+    first_name = forms.CharField(label=KeyValue.first_name, max_length=30, required=True, help_text='Required.')
+    last_name = forms.CharField(label=KeyValue.last_name, max_length=30, required=True, help_text='Required.')
+    email = forms.EmailField(label=KeyValue.email, max_length=254, help_text='Required. Inform a valid email address.')
+
+    class Meta:
+        model = User
+        fields = ('username', 'first_name', 'last_name', 'email', 'password1', 'password2',)
+
+
+class ProfileForm(forms.Form):
+    group = forms.ModelChoiceField(label=KeyValue.group, queryset=ShiftGroup.objects.all(),
+                                   required=True)
+    in_shift = forms.BooleanField(label=KeyValue.in_shift, required=False, initial=True)
 
 
 class DatePickerForm(forms.Form):

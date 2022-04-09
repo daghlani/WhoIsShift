@@ -4,18 +4,23 @@ from django.template.defaultfilters import slugify
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator, MinLengthValidator
 from django.core.validators import FileExtensionValidator
-from config.config import MonthNames, excel_file_extension, KeyValue
+from config.config import MonthNames, excel_file_extension, KeyValue, Error
+from django.contrib.auth.models import User
 
-alphanumeric = RegexValidator(r'^[0-9a-zA-Z]*$', 'Only alphanumeric characters are allowed.')
+# from django.db.models.signals import post_save
+# from django.dispatch import receiver
+
+alphanumeric = RegexValidator(r'^[0-9a-zA-Z]*$', Error.alphanumeric['fa'])
 min_len_4 = MinLengthValidator(limit_value=4)
-min_len_19 = MinLengthValidator(limit_value=19)
+min_len_21 = MinLengthValidator(limit_value=21)
 
 
 class ShiftGroup(models.Model):
-    name = models.CharField(max_length=50, validators=[alphanumeric], null=False, blank=False)
-    pr_name = models.CharField(max_length=100, null=True, blank=True)
-    prefix = models.CharField(max_length=4, validators=[min_len_4])
-    owner = models.OneToOneField(User, on_delete=models.CASCADE, unique=True)
+    name = models.CharField(verbose_name=KeyValue.name, max_length=50, validators=[alphanumeric], null=False,
+                            blank=False)
+    pr_name = models.CharField(verbose_name=KeyValue.pr_name, max_length=100, null=True, blank=True)
+    prefix = models.CharField(verbose_name=KeyValue.prefix, max_length=4, validators=[min_len_4])
+    owner = models.OneToOneField(User, verbose_name=KeyValue.owner, on_delete=models.CASCADE, unique=True)
     rest_number = models.IntegerField(verbose_name=KeyValue.rest_number, default=2)
     normal_req = models.IntegerField(verbose_name=KeyValue.normal_req, default=4)
     tuesday_req = models.IntegerField(verbose_name=KeyValue.tuesday_req, default=3)
@@ -31,8 +36,18 @@ class ShiftGroup(models.Model):
             ("can_add_shift_on_page", "can_add_shift_on_page"),
         )
 
+    def get_req_of_type(self, txt):
+        if txt == 'Fri':
+            return self.friday_req
+        elif txt == 'Tue':
+            return self.tuesday_req
+        elif txt == 'Thu':
+            return self.thursday_req
+        else:
+            raise Exception('txt is not correct. please choose one of the "Fri, Tue, Thu"')
+
     def __str__(self):
-        return str(self.name)
+        return str(self.pr_name)
 
 
 class Profile(models.Model):
@@ -40,7 +55,7 @@ class Profile(models.Model):
     name = models.CharField(max_length=20, default=' ')
     last_name = models.CharField(max_length=30, default=' ')
     group = models.ForeignKey(ShiftGroup, on_delete=models.CASCADE, default=None)
-    in_shift = models.BooleanField(default=True)
+    in_shift = models.BooleanField(verbose_name=KeyValue.in_shift, default=True)
     in_night_shift = models.BooleanField(default=True)
     in_day_shift = models.BooleanField(default=True)
     avatar = models.ImageField(default='default.jpg', upload_to='profile_images')
@@ -55,6 +70,13 @@ class Profile(models.Model):
 
     def _username(self):
         return self.user.username
+
+
+# @receiver(post_save, sender=User)
+# def update_user_profile(sender, instance, created, **kwargs):
+#     if created:
+#         Profile.objects.create(user=instance)
+#     instance.profile.save()
 
 
 class ExcelColumns(models.Model):
@@ -153,7 +175,7 @@ class ShiftDay(models.Model):
     night_pr_people_list = models.TextField()
     day_people_list = models.TextField(null=True, blank=True)
     day_pr_people_list = models.TextField(null=True, blank=True)
-    type = models.CharField(max_length=19, validators=[min_len_19], unique=True)
+    type = models.CharField(max_length=21, validators=[min_len_21], unique=True)
     is_formally_holiday = models.BooleanField(default=False)
     day_responsible = models.CharField(max_length=30, default=None, null=True)
     night_responsible = models.CharField(max_length=30, default=None, null=True)

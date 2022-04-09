@@ -23,6 +23,13 @@ class ProfileAdmin(admin.ModelAdmin):
     readonly_fields = ('shift_count',)
     list_filter = ('group', 'in_shift', 'shift_count',)
 
+    # To make limitation for non super users to see only Profiles of hers team.
+    def get_queryset(self, request):
+        qs = super(ProfileAdmin, self).get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        return qs.filter(group=ShiftGroup.objects.get(owner__username=request.user))
+
     @admin.display(description='PROFILE IMAGE')
     def image_tag(self, obj):
         return obj.image_tag()

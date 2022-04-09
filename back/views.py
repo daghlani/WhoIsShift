@@ -9,7 +9,7 @@ from django.db.models import Q, Sum, F
 import pandas as pd
 import numpy as np
 from config.config import *
-from back.forms import DatePickerForm, FileEditForm, ShiftForm  # , testForm
+from back.forms import DatePickerForm, FileEditForm, ShiftForm, SignUpForm, ProfileForm  # , testForm
 from tools.jalali import *
 from django.utils import timezone
 from django.urls import reverse
@@ -18,6 +18,7 @@ from back.functions import *
 from threading import Thread
 from back.logger import logger
 import itertools
+from django.contrib.auth import login, authenticate
 
 
 def glob_context():
@@ -50,6 +51,35 @@ def home(request):
     context['groups'] = groups
     html_template = loader.get_template('home/index.html')
     return HttpResponse(html_template.render(context, request))
+
+
+def signup(request):
+    if request.method == 'POST':
+        user_form = SignUpForm(request.POST)
+        profile_form = ProfileForm(request.POST)
+        if user_form.is_valid() and profile_form.is_valid():
+            user = user_form.save()
+            # user.refresh_from_db()  # load the profile instance created by the signal
+            Profile.objects.create(user=user, name=user_form.cleaned_data.get('first_name'),
+                                   last_name=user_form.cleaned_data.get('last_name'),
+                                   group=profile_form.cleaned_data.get('group'),
+                                   in_shift=profile_form.cleaned_data.get('in_shift')
+                                   )
+            # user.profile.user = user
+            # user.profile.name = user_form.cleaned_data.get('first_name')
+            # user.profile.last_name = user_form.cleaned_data.get('last_name')
+            # user.profile.group = profile_form.cleaned_data.get('group')
+            # user.profile.in_shift = profile_form.cleaned_data.get('in_shift')
+            # user.save()
+            username = user_form.cleaned_data.get('username')
+            raw_password = user_form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=raw_password)
+            login(request, user)
+            return redirect('home')
+    else:
+        user_form = SignUpForm()
+        profile_form = ProfileForm()
+    return render(request, 'registration/signup.html', {'user_form': user_form, 'profile_form': profile_form})
 
 
 @login_required()
@@ -165,10 +195,13 @@ def shift(request, grp_name):
             if form.is_valid():
                 selected_month = form.cleaned_data['month']
                 selected_year = form.cleaned_data['year']
-        all_days = list(ShiftDay.objects.filter(group=grp, j_year_num=selected_year, j_month_num=selected_month).values(
-            'type', 'is_formally_holiday', 'j_day_num', 'j_month_num', 'j_year_num', 'night_people_list',
-            'day_people_list', 'day_responsible', 'night_responsible', 'night_pr_people_list', 'day_pr_people_list'
-        ))
+        all_days = list(
+            ShiftDay.objects.filter(group=grp, j_year_num=selected_year, j_month_num=selected_month, ).order_by(
+                'j_year_num', 'j_month_num', 'j_day_num'
+            ).values(
+                'type', 'is_formally_holiday', 'j_day_num', 'j_month_num', 'j_year_num', 'night_people_list',
+                'day_people_list', 'day_responsible', 'night_responsible', 'night_pr_people_list', 'day_pr_people_list'
+            ))
         context['days'] = all_days
         texts = dict()
         texts['row'] = KeyValue.row
@@ -270,6 +303,13 @@ def shift_create_tr(request):
                         normal_day_cal_(ind, i, normal_limit_count, shift_count_limit_count, form_obj,
                                         u_holiday_days=selected_formally_holiday,
                                         u_holiday=formally_holiday_limit_count)
+                    # done_days_list = ShiftDay.objects.get(group=selected_group, j_day_num__gte=selected_day_first,
+                    #                                       j_month_num__gte=selected_month_first,
+                    #                                       j_year_num__gte=selected_year_first).values__list('type')
+                    # for ind, i in enumerate(done_days_list):
+                    #     i_name, i_date = i.split('__')
+                    #     if i_name not in ['Thu', 'Tue', 'Fri']:
+                    #         maintain_day(i)
                     all_days_of_first_month = ShiftDay.objects.filter(group=form_obj.group,
                                                                       j_month_num=selected_month_first,
                                                                       j_year_num=selected_year_first)

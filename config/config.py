@@ -16,6 +16,7 @@ owner_perms = [
     'Can view friday', 'Can change friday',
     'Can view tuesday', 'Can change tuesday',
     'Can view thursday', 'Can change thursday',
+    'Can view profile',
 ]
 
 WEEK_MAP = dict(
@@ -24,14 +25,14 @@ WEEK_MAP = dict(
     Monday='دوشنبه',
     Tuesday='سه‌شنبه',
     Wednesday='چهارشنبه',
-    Thursday='پنجشنه',
+    Thursday='پنجشنبه',
     Friday='جمعه',
     SAT='شنبه',
     SUN='یکشنبه',
     MON='دوشنبه',
     TUE='سه‌شنبه',
     WED='چهارشنبه',
-    THU='پنجشنه',
+    THU='پنجشنبه',
     FRI='جمعه',
 )
 PRI_WEEK_MAP = dict(
@@ -53,6 +54,17 @@ PRI_WEEK_MAP = dict(
 
 
 class KeyValue:
+    name = 'نام'
+    username = 'نام کاربری'
+    password1 = 'گذرواژه'
+    password2 = 'تکرار گذرواژه'
+    in_shift = 'حضور در شیفت'
+    first_name = 'نام'
+    last_name = 'نام خانوادگی'
+    pr_name = 'نام فارسی'
+    email = 'ایمیل'
+    prefix = 'نام اختصاری'
+    owner = 'مالک'
     welcome_txt = 'خوش آمدید'
     j_date_t = 'امروز'
     row = 'ردیف'
@@ -127,3 +139,7 @@ class MonthNames:
     for r in range(1, 32):
         JALALI_DAY_CHOICES.append((r, r))
     # JALALI_DAY_CHOICES.append((None, 'Choose...'))
+
+
+class Error:
+    alphanumeric = dict(en='Only alphanumeric characters are allowed.', fa='تنها حروف البای انگلیسی مجاز است!')

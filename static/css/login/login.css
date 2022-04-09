@@ -116,7 +116,8 @@ button{
   background-color: rgba(255,255,255,0.47);
 }
 .social .go{
-  margin-left: 25px;
+  /*margin-left: 25px;*/
+  margin-right: 25px;
 }
 .social i{
   margin-right: 4px;
