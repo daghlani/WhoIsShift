@@ -5,6 +5,8 @@ from django.db.models import F
 from tools.jalali import jalali_timedelta
 from back.logger import logger
 from tools.jalali import gregorian_to_jalali
+import pandas as pd
+import numpy as np
 
 
 def printer(s, side_space=3, side_str=6, char='#'):
@@ -15,6 +17,24 @@ def printer(s, side_space=3, side_str=6, char='#'):
     _str = all_char * char + '\n' + side_str * char + side_space * ' ' + s + side_space * ' ' + \
            side_str * char + '\n' + all_char * char
     print(_str)
+
+
+def handle_uploaded_file(file, file_name):
+    with open(file_name, 'wb+') as destination:
+        for chunk in file.chunks():
+            destination.write(chunk)
+
+
+def read_excel_column(filepath):
+    df = pd.read_excel(filepath)
+    return list(df.columns)
+
+
+def read_excel(list_of_columns, filepath):
+    data = pd.read_excel(filepath)
+    df = pd.DataFrame(data, columns=list_of_columns).replace(np.nan, '--')
+    df_list = df.values.tolist()
+    return df_list
 
 
 def index_changer(first, second, list_):

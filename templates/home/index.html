@@ -1,109 +1,119 @@
 {% extends 'layouts/base.html' %}
 {% load static %}
 {% block content %}
-<!--&lt;!&ndash;<link rel="stylesheet" href="{% static 'css/hexagon-el.css' %}?{% now 'u' %}">&ndash;&gt;-->
-<!--<ul id="grid" class="clear">-->
-<!--{% for gr in groups %}-->
-<!--<li>-->
-<!--<a class="hexagon-link" href="/shift/{{ gr.name }}">-->
-<!--<div class="hexagon"><h1 style="margin: 50% auto; text-align: center">{{ gr.name }}</h1></div>-->
-<!--</a>-->
-<!--</li>-->
-<!--{% endfor %}-->
-<!--{% if perms.back.can_see_management %}-->
-<!--<li>-->
-<!--<a class="hexagon-link" href="/admin">-->
-<!--<div class="hexagon" style="background: #38070ce6;"><h1-->
-<!--style="margin: 50% auto; text-align: center; font-size: 1.5em">Managements</h1></div>-->
-<!--</a>-->
-<!--</li>-->
-<!--{% endif %}-->
-<!--</ul>-->
-<!--<link rel="stylesheet" href="{% static 'css/hexagon-el.css' %}?{% now 'u' %}">-->
-<ul id="grid" class="clear">
-    {% for gr in groups %}
-    <li>
-        <a class="hexagon-link" href="/shift/{{ gr.name }}">
-            <div class="hexagon"><h1 style="font-size: 1.37vw">{{ gr.pr_name }}</h1></div>
-        </a>
-        <div><img src="media/icons/phone_icon.png" style="width: 25px;margin-right: 7px;">{{ gr.phone_number }}</div>
-    </li>
-    {% endfor %}
-    {% if perms.back.can_see_management %}
-    <li id="mng">
-        <a class="hexagon-link-mng" href="/admin">
-            <div class="hexagon"><h1>Managements</h1></div>
-        </a>
-    </li>
-    {% endif %}
-</ul>
-<style>
-    .clear {
-        display: flex;
+    <!--&lt;!&ndash;<link rel="stylesheet" href="{% static 'css/hexagon-el.css' %}?{% now 'u' %}">&ndash;&gt;-->
+    <!--<ul id="grid" class="clear">-->
+    <!--{% for gr in groups %}-->
+        <!--<li>-->
+        <!--<a class="hexagon-link" href="/shift/{{ gr.name }}">-->
+        <!--<div class="hexagon"><h1 style="margin: 50% auto; text-align: center">{{ gr.name }}</h1></div>-->
+        <!--</a>-->
+        <!--</li>-->
+        <!--{% endfor %}-->
+    <!--{% if perms.back.can_see_management %}-->
+        <!--<li>-->
+        <!--<a class="hexagon-link" href="/admin">-->
+        <!--<div class="hexagon" style="background: #38070ce6;"><h1-->
+        <!--style="margin: 50% auto; text-align: center; font-size: 1.5em">Managements</h1></div>-->
+        <!--</a>-->
+        <!--</li>-->
+        <!--{% endif %}-->
+    <!--</ul>-->
+    <!--<link rel="stylesheet" href="{% static 'css/hexagon-el.css' %}?{% now 'u' %}">-->
+    <ul id="grid" class="clear">
+        {% for gr in groups %}
+            <li>
+                <a class="hexagon-link" href="/shift/{{ gr.name }}">
+                    <div class="hexagon"><h1 style="font-size: 1.37vw">{{ gr.pr_name }}</h1></div>
+                </a>
+                {% if gr.phone_number > 0 %}
+                    <div>
+                        <img src="media/icons/phone_icon.png" style="width: 25px;margin-right: 7px;">
+                        {{ gr.phone_number }}
+                    </div>
+                {% else %}
+                    <div style="display: none">
+                        <img src="media/icons/phone_icon.png" style="width: 25px;margin-right: 7px;">
+                        {{ gr.phone_number }}
+                    </div>
+                {% endif %}
+            </li>
+        {% endfor %}
+        {% if perms.back.can_see_management %}
+            <li id="mng">
+                <a class="hexagon-link-mng" href="/admin">
+                    <div class="hexagon"><h1>Managements</h1></div>
+                </a>
+            </li>
+        {% endif %}
+    </ul>
+    <style>
+        .clear {
+            display: flex;
 
-    }
+        }
 
-    .hexagon {
-        width: max-content;
-        margin: 20% auto auto;
-    }
+        .hexagon {
+            width: max-content;
+            margin: 20% auto auto;
+        }
 
-    .hexagon:hover {
-        margin-top: 18%;
-    }
+        .hexagon:hover {
+            margin-top: 18%;
+        }
 
-    a:hover {
-        color: white;
-    }
+        a:hover {
+            color: white;
+        }
 
-    .hexagon-link, .hexagon-link-mng {
-        color: white;
-        text-decoration: none;
-    }
+        .hexagon-link, .hexagon-link-mng {
+            color: white;
+            text-decoration: none;
+        }
 
-    li {
-        width: 250px;
-        margin: auto;
-        height: 150px;
-        text-align: center;
-        marker: none;
-        list-style: none;
-        border-radius: 25px;
-        /*border: 1px solid;*/
-        background-color: #031d1d;
-        box-shadow: 2px -5px 30px #000000;
-    }
+        li {
+            width: 250px;
+            margin: auto;
+            height: 150px;
+            text-align: center;
+            marker: none;
+            list-style: none;
+            border-radius: 25px;
+            /*border: 1px solid;*/
+            background-color: #031d1d;
+            box-shadow: 2px -5px 30px #000000;
+        }
 
-    #mng {
-        background-color: #400101;
-    }
+        #mng {
+            background-color: #400101;
+        }
 
-    #mng h1 {
-        font-size: revert;
-    }
+        #mng h1 {
+            font-size: revert;
+        }
 
-    .clear h1:hover {
-        color: white;
-        text-shadow: 3px 7px #000000;
-        top: -10px;
-    }
+        .clear h1:hover {
+            color: white;
+            text-shadow: 3px 7px #000000;
+            top: -10px;
+        }
 
-    .clear {
+        .clear {
 
-        display: flex;
+            display: flex;
 
-        justify-content: center;
-        align-items: stretch;
-        /* flex-flow: row wrap; */
-        flex-direction: row;
-        flex-wrap: wrap;
-        align-content: center;
+            justify-content: center;
+            align-items: stretch;
+            /* flex-flow: row wrap; */
+            flex-direction: row;
+            flex-wrap: wrap;
+            align-content: center;
 
-        /*background-color: #bbdefb;*/
-        height: 100%;
-        padding: 15px;
-        gap: 25px;
+            /*background-color: #bbdefb;*/
+            height: 100%;
+            padding: 15px;
+            gap: 25px;
 
-    }
-</style>
+        }
+    </style>
 {% endblock content %}

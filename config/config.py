@@ -5,9 +5,16 @@ year_range = 10
 days_of_week = {'en': 'days_of_week', 'fa': 'ایام هفته'}
 date = {'en': 'date', 'fa': 'تاریخ'}
 day_operator = {'en': 'day_operator', 'fa': 'شیفت روز'}
+day_responsible = {'en': 'day_operator', 'fa': 'مسئول روز'}
 night_operator = {'en': 'night_operator', 'fa': 'شیفت شب'}
+night_responsible = {'en': 'day_operator', 'fa': 'مسئول شب'}
+day_name = {'en': 'day_name', 'fa': 'نام روز'}
+day = {'en': 'day', 'fa': 'روز'}
+month = {'en': 'month', 'fa': 'ماه'}
+year = {'en': 'year', 'fa': 'سال'}
 # default_excel_presence_columns = [days_of_week['fa'], date['fa'], day_operator['fa'], night_operator['fa']]
-
+default_excel_shift_columns = [day_name['fa'], day['fa'], month['fa'], year['fa'], day_operator['fa'],
+                               day_responsible['fa'], night_operator['fa'], night_responsible['fa']]
 
 owner_perms = [
     'can_see_management', 'can_add_shift_on_page',
@@ -54,6 +61,7 @@ PRI_WEEK_MAP = dict(
 
 
 class KeyValue:
+    excel_file = 'فایل اکسل'
     name = 'نام'
     username = 'نام کاربری'
     password1 = 'گذرواژه'
@@ -69,6 +77,7 @@ class KeyValue:
     j_date_t = 'امروز'
     row = 'ردیف'
     submit = 'ارسال'
+    excel_file_is_valid = 'اطلاعات زیر صحیح است'
     shift_num = 'تلفن شیفت'
     loading_title = 'لطفا منتظر بمانید...'
     formally_holiday = 'تعطیلات رسمی'
@@ -143,3 +152,7 @@ class MonthNames:
 
 class Error:
     alphanumeric = dict(en='Only alphanumeric characters are allowed.', fa='تنها حروف البای انگلیسی مجاز است!')
+
+
+class Success:
+    upload_success = 'file uploaded successfully.'

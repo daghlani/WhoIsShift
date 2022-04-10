@@ -6,8 +6,6 @@ from back.models import ShiftGroup, FileObj, ExcelColumns, Profile, Shift, Tuesd
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 from django.db.models import Q, Sum, F
-import pandas as pd
-import numpy as np
 from config.config import *
 from back.forms import DatePickerForm, FileEditForm, ShiftForm, SignUpForm, ProfileForm  # , testForm
 from tools.jalali import *
@@ -32,17 +30,6 @@ def glob_context():
 def get_jalali_now():
     now = timezone.now()
     return gregorian_to_jalali(now.year, now.month, now.day)
-
-
-def handle_uploaded_file(file, file_name):
-    with open(file_name, 'wb+') as destination:
-        for chunk in file.chunks():
-            destination.write(chunk)
-
-
-def read_excel_column(filepath):
-    df = pd.read_excel(filepath)
-    return list(df.columns)
 
 
 def home(request):
@@ -90,13 +77,6 @@ def profile(request, pk):
     context.update(user_data=user_data)
     context.update(bool_dict=bool_dict)
     return render(request, 'back/profile.html', context)
-
-
-def read_excel(list_of_columns, filepath):
-    data = pd.read_excel(filepath)
-    df = pd.DataFrame(data, columns=list_of_columns).replace(np.nan, '--')
-    df_list = df.values.tolist()
-    return df_list
 
 
 def excel(request, grp_name):
