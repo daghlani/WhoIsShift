@@ -34,8 +34,27 @@ def get_jalali_now():
 
 def home(request):
     context = glob_context()
+    j_now = get_jalali_now()
     groups = ShiftGroup.objects.all()
+    prs = dict()
+    for grp in groups:
+        try:
+            _day = ShiftDay.objects.get(j_year_num=j_now[0], j_month_num=j_now[1], j_day_num=j_now[2], group=grp)
+            if get_time_obj().hour > 17:
+                pr = _day.night_responsible
+                pr_pr = _day.night_responsible_pr
+            else:
+                pr = _day.day_responsible
+                pr_pr = _day.day_responsible_pr
+            pr_obj = Profile.objects.get(user__username=pr)
+            prs[grp.prefix] = dict(name=pr, pr_name=pr_pr, phone=pr_obj.phone_number)
+            print(pr)
+            print(pr_obj.phone_number)
+        except Exception as er:
+            print(er)
+    print(prs)
     context['groups'] = groups
+    context['prs'] = prs
     html_template = loader.get_template('home/index.html')
     return HttpResponse(html_template.render(context, request))
 

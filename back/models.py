@@ -28,7 +28,7 @@ class ShiftGroup(models.Model):
     friday_req = models.IntegerField(verbose_name=KeyValue.friday_req, default=1)
     formally_holiday_req = models.IntegerField(verbose_name=KeyValue.formally_holiday_req, default=1)
     shift_count_limit = models.IntegerField(verbose_name=KeyValue.shift_count_limit, default=5)
-    phone_number = models.IntegerField(verbose_name=KeyValue.shift_count_limit, default=9090)
+    phone_number = models.IntegerField(verbose_name=KeyValue.phone_number, default=9090)
 
     class Meta:
         permissions = (
@@ -61,6 +61,7 @@ class Profile(models.Model):
     avatar = models.ImageField(default='default.jpg', upload_to='profile_images')
     bio = models.TextField(default='', blank=True)
     shift_count = models.IntegerField(verbose_name=KeyValue.shift_count, default=0)
+    phone_number = models.IntegerField(verbose_name=KeyValue.phone_number, default=9110)
 
     def image_tag(self):
         return mark_safe('<img src="/media/%s" width="80" height="80" />' % self.avatar)
@@ -178,7 +179,9 @@ class ShiftDay(models.Model):
     type = models.CharField(max_length=21, validators=[min_len_21], unique=True)
     is_formally_holiday = models.BooleanField(default=False)
     day_responsible = models.CharField(max_length=30, default=None, null=True)
+    day_responsible_pr = models.CharField(max_length=30, default=None, null=True)
     night_responsible = models.CharField(max_length=30, default=None, null=True)
+    night_responsible_pr = models.CharField(max_length=30, default=None, null=True)
 
     def __str__(self):
         return self.type

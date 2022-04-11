@@ -17,7 +17,6 @@ def type_splitter(type):
     return type.split('__')[0]
 
 
-
 # {% current_date_persian %}
 @register.simple_tag
 def current_date_persian():
@@ -66,6 +65,22 @@ def get_pr_name(username):
     return "{} {}".format(pr.name, pr.last_name)
 
 
+def key_name(dic, key):
+    try:
+        return dic[key]['pr_name']
+    except:
+        pass
+
+
+def key_phone(dic, key):
+    try:
+        return dic[key]['phone']
+    except:
+        pass
+
+
+register.filter('key_name', key_name)
+register.filter('key_phone', key_phone)
 register.filter('type_splitter', type_splitter)
 register.filter('modify_week', modify_week)
 register.filter('l10n_num', l10n_num)

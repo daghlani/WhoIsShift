@@ -7,6 +7,13 @@ from back.logger import logger
 from tools.jalali import gregorian_to_jalali
 import pandas as pd
 import numpy as np
+from datetime import datetime
+import pytz
+
+
+def get_time_obj(t_zone='Asia/Tehran'):
+    tz = pytz.timezone(t_zone)
+    return datetime.now(tz)
 
 
 def printer(s, side_space=3, side_str=6, char='#'):
