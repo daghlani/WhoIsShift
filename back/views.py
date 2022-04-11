@@ -345,3 +345,15 @@ def shift_create_tr(request):
     context['texts'] = texts
     context['form'] = form
     return render(request, 'back/shift_create.html', context)
+
+
+def handler404(request, *args, **argv):
+    response = render(request, 'home/404.html', {})
+    response.status_code = 404
+    return response
+
+
+def handler500(request, *args, **argv):
+    response = render(request, 'home/500.html', {})
+    response.status_code = 500
+    return response
