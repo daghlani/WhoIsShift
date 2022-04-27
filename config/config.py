@@ -94,6 +94,8 @@ class KeyValue:
     type = 'روز'
     date = 'تاریخ'
     day = 'شیفت روز'
+    day_st = 'روز'
+    night_st = 'شب'
     day_res = 'مسئول روز'
     night = 'شیفت شب'
     night_res = 'مسئول شب'

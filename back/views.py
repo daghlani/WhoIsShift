@@ -48,11 +48,9 @@ def home(request):
                 pr_pr = _day.day_responsible_pr
             pr_obj = Profile.objects.get(user__username=pr)
             prs[grp.prefix] = dict(name=pr, pr_name=pr_pr, phone=pr_obj.phone_number)
-            print(pr)
-            print(pr_obj.phone_number)
         except Exception as er:
+            logger.debug(er)
             print(er)
-    print(prs)
     context['groups'] = groups
     context['prs'] = prs
     html_template = loader.get_template('home/index.html')
@@ -69,8 +67,7 @@ def signup(request):
             Profile.objects.create(user=user, name=user_form.cleaned_data.get('first_name'),
                                    last_name=user_form.cleaned_data.get('last_name'),
                                    group=profile_form.cleaned_data.get('group'),
-                                   in_shift=profile_form.cleaned_data.get('in_shift')
-                                   )
+                                   in_shift=profile_form.cleaned_data.get('in_shift'))
             # user.profile.user = user
             # user.profile.name = user_form.cleaned_data.get('first_name')
             # user.profile.last_name = user_form.cleaned_data.get('last_name')
@@ -208,8 +205,10 @@ def shift(request, grp_name):
         texts['row'] = KeyValue.row
         texts['type'] = KeyValue.type
         texts['date'] = KeyValue.date
-        texts['day'] = KeyValue.day
+        texts['day_st'] = KeyValue.day_st
+        texts['night_st'] = KeyValue.night_st
         texts['day_res'] = KeyValue.day_res
+        texts['grp_num'] = grp.phone_number
         texts['night'] = KeyValue.night
         texts['night_res'] = KeyValue.night_res
         context['texts'] = texts

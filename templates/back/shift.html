@@ -16,9 +16,11 @@
                     <th class="task_row">{{ texts.type|type_splitter }}</th>
                     <th class="task_row">{{ texts.date }}</th>
                     <th class="task_row">{{ texts.day }}</th>
-                    <th class="task_row">{{ texts.day_res }}</th>
+{#                    <th class="task_row">{{ texts.day_res }}</th>#}
+                    <th class="task_row">{{ texts.grp_num|l10n_num:"fa" }} - {{ texts.day_st }}</th>
                     <th class="task_row">{{ texts.night }}</th>
-                    <th class="task_row">{{ texts.night_res }}</th>
+{#                    <th class="task_row">{{ texts.night_res }}</th>#}
+                    <th class="task_row">{{ texts.grp_num|l10n_num:"fa" }} - {{ texts.night_st }}</th>
                 </tr>
                 </thead>
                 {% for row in days %}
