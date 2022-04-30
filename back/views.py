@@ -269,12 +269,27 @@ def shift_create_tr(request):
                 form_obj.save()
                 ################################################################################################
                 days_list = form_obj.days_name.split(',')
+
+                for ind, day in enumerate(days_list):
+                    greg_j_date_y, greg_j_date_m, greg_j_date_d = day.split('__')[1].split('/')
+                    y, m, d = gregorian_to_jalali(int(greg_j_date_y), int(greg_j_date_m), int(greg_j_date_d))
+                    if str('{}/{}'.format(m, d)) in selected_formally_holiday:
+                        print('^' * 100)
+                        print('{} -- {}/{}'.format(day, m, d))
+                        days_list[ind] = 'U_' + day
+                        print('^' * 100)
+                printer('='*100)
+                print(days_list)
+                printer('='*100)
                 normal_limit_count = selected_group.normal_req
                 tuesday_limit_count = selected_group.tuesday_req
                 thursday_limit_count = selected_group.thursday_req
                 friday_limit_count = selected_group.friday_req
                 formally_holiday_limit_count = selected_group.formally_holiday_req
                 shift_count_limit_count = selected_group.shift_count_limit
+                print('$' * 100)
+                print(selected_formally_holiday)
+                print('$' * 100)
 
                 Profile.objects.filter(group=form_obj.group).update(shift_count=0)
 

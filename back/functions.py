@@ -9,11 +9,16 @@ import pandas as pd
 import numpy as np
 from datetime import datetime
 import pytz
+import re
 
 
 def get_time_obj(t_zone='Asia/Tehran'):
     tz = pytz.timezone(t_zone)
     return datetime.now(tz)
+
+
+def rm_U(s):
+    return re.sub('U_', '', s)
 
 
 def printer(s, side_space=3, side_str=6, char='#'):
@@ -129,19 +134,17 @@ def special_day_cal_(ind, j, d_type, d_count, group_shift_count, people_group_ty
         printer('type {} exists'.format('{}__{}'.format(j, group.prefix)))
         return
     j_name, j_date = j.split('__')
+    is_formal_ = False
+    if 'U_' in j_name:
+        is_formal_ = True
+        j_name = rm_U(j_name)
+        d_count = u_holiday if u_holiday is not None else 1
+        print('d_count is: ', d_count)
     greg_j_date_y, greg_j_date_m, greg_j_date_d = j_date.split('/')
     y, m, d = gregorian_to_jalali(int(greg_j_date_y), int(greg_j_date_m), int(greg_j_date_d))
     if j_name == d_type:
         i_people = []
         unavailable_people = []
-        is_formal_ = False
-        if u_holiday is not None and u_holiday_days is not None:
-            print('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
-            print(d, u_holiday, u_holiday_days)
-            if str('{}/{}'.format(m, d)) in u_holiday_days:
-                is_formal_ = True
-                d_count = u_holiday
-                print('d_count is: ', d_count)
         print('d_count is: ', d_count)
         print('start people_group_type_list of {} is :-----------------{}---------------------'.format(
             d_type, people_group_type_list))
@@ -180,10 +183,10 @@ def special_day_cal_(ind, j, d_type, d_count, group_shift_count, people_group_ty
             group=group,
             night_people_list=','.join(i_people),
             day_people_list='',
-            type='{}__{}'.format(j, group.prefix),
-            is_formally_holiday=is_formal_,
-            day_responsible=None,
-            night_responsible=None
+            type='{}__{}'.format(rm_U(j), group.prefix),
+        is_formally_holiday = is_formal_,
+                              day_responsible = None,
+                                                night_responsible = None
         )
         print('______________________________________________________')
         print('finally list is: ', people_group_type_list)
@@ -205,17 +208,15 @@ def normal_day_cal_(ind, j, d_count, group_shift_count, form_obj, u_holiday_days
         printer('type {} exists'.format(j))
         return
     y, m, d = gregorian_to_jalali(int(greg_j_date_y), int(greg_j_date_m), int(greg_j_date_d))
+    is_formal_ = False
+    if 'U_' in j_name:
+        is_formal_ = True
+        j_name = rm_U(j_name)
+        d_count = u_holiday if u_holiday is not None else 1
+        print('d_count is: ', d_count)
     if j_name not in ['Tue', 'Thu', 'Fri']:
         i_people = []
         unavailable_people = []
-        is_formal_ = False
-        if u_holiday is not None and u_holiday_days is not None:
-            print('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
-            print(d, u_holiday, u_holiday_days)
-            if str('{}/{}'.format(m, d)) in u_holiday_days:
-                is_formal_ = True
-                d_count = u_holiday
-                print('d_count is: ', d_count)
         print('d_count is: ', d_count)
         print('start people_list is :-----------------{}---------------------'.format(people_list))
         for _time in range(d_count):
@@ -251,7 +252,7 @@ def normal_day_cal_(ind, j, d_count, group_shift_count, form_obj, u_holiday_days
             group=group,
             night_people_list=','.join(i_people),
             day_people_list='',
-            type='{}__{}'.format(j, group.prefix),
+            type='{}__{}'.format(rm_U(j), group.prefix),
             is_formally_holiday=is_formal_,
             day_responsible=None,
             night_responsible=None
