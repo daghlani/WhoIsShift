@@ -143,6 +143,10 @@ class Friday(SpecialDay):
         return self.group.name
 
 
+class FormalH(SpecialDay):
+    def __str__(self):
+        return self.group.name
+
 class Shift(models.Model):
     j_year_num_first = models.IntegerField(verbose_name=MonthNames.year_first, choices=MonthNames.JALALI_YEAR_CHOICES,
                                            null=True, blank=True)

@@ -23,6 +23,7 @@ owner_perms = [
     'Can view friday', 'Can change friday',
     'Can view tuesday', 'Can change tuesday',
     'Can view thursday', 'Can change thursday',
+    'Can view formal h', 'Can change formal h'
     'Can view profile',
 ]
 

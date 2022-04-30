@@ -1,5 +1,5 @@
 from django.contrib import admin
-from back.models import ShiftGroup, FileObj, ExcelColumns, Profile, Shift, Tuesday, Thursday, Friday, ShiftDay
+from back.models import ShiftGroup, FileObj, ExcelColumns, Profile, Shift, Tuesday, Thursday, Friday, ShiftDay, FormalH
 from back.forms import ShiftForm_factory
 
 admin.AdminSite.site_header = 'WhoIsShift'
@@ -18,7 +18,8 @@ class ShiftGroupAdmin(admin.ModelAdmin):
 
 
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ('image_tag', 'user', 'group', 'shift_count', 'in_shift', 'in_night_shift', 'in_day_shift')
+    list_display = (
+        'image_tag', 'name', 'last_name', 'group', 'shift_count', 'in_shift', 'in_night_shift', 'in_day_shift')
     search_fields = ('user__username', 'group__name', 'in_shift', 'in_night_shift', 'in_day_shift')
     readonly_fields = ('shift_count',)
     list_filter = ('group', 'in_shift', 'shift_count',)
@@ -99,4 +100,5 @@ admin.site.register(ExcelColumns)
 admin.site.register(Tuesday, SpecialDayAdmin)
 admin.site.register(Thursday, SpecialDayAdmin)
 admin.site.register(Friday, SpecialDayAdmin)
+admin.site.register(FormalH, SpecialDayAdmin)
 admin.site.register(ShiftDay, ShiftDayAdmin)

@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django import template
 from django.contrib.auth.decorators import login_required
-from back.models import ShiftGroup, FileObj, ExcelColumns, Profile, Shift, Tuesday, Thursday, Friday, ShiftDay
+from back.models import ShiftGroup, FileObj, ExcelColumns, Profile, Shift, Tuesday, Thursday, Friday, ShiftDay, FormalH
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 from django.db.models import Q, Sum, F
@@ -269,27 +269,18 @@ def shift_create_tr(request):
                 form_obj.save()
                 ################################################################################################
                 days_list = form_obj.days_name.split(',')
-
+                # Detect formal holidays
                 for ind, day in enumerate(days_list):
                     greg_j_date_y, greg_j_date_m, greg_j_date_d = day.split('__')[1].split('/')
                     y, m, d = gregorian_to_jalali(int(greg_j_date_y), int(greg_j_date_m), int(greg_j_date_d))
                     if str('{}/{}'.format(m, d)) in selected_formally_holiday:
-                        print('^' * 100)
-                        print('{} -- {}/{}'.format(day, m, d))
                         days_list[ind] = 'U_' + day
-                        print('^' * 100)
-                printer('='*100)
-                print(days_list)
-                printer('='*100)
                 normal_limit_count = selected_group.normal_req
                 tuesday_limit_count = selected_group.tuesday_req
                 thursday_limit_count = selected_group.thursday_req
                 friday_limit_count = selected_group.friday_req
                 formally_holiday_limit_count = selected_group.formally_holiday_req
                 shift_count_limit_count = selected_group.shift_count_limit
-                print('$' * 100)
-                print(selected_formally_holiday)
-                print('$' * 100)
 
                 Profile.objects.filter(group=form_obj.group).update(shift_count=0)
 
@@ -299,22 +290,19 @@ def shift_create_tr(request):
 
                 def calc():
                     for ind, i in enumerate(days_list):
+                        group_formal_list = get_special_list(FormalH, selected_group, form_obj)
+                        formal_holidays_cal_(ind, i, formally_holiday_limit_count, shift_count_limit_count,
+                                             group_formal_list, form_obj)
                         group_tuesday_list = get_special_list(Tuesday, selected_group, form_obj)
                         special_day_cal_(ind, i, 'Tue', tuesday_limit_count, shift_count_limit_count,
-                                         group_tuesday_list,
-                                         form_obj, u_holiday_days=selected_formally_holiday,
-                                         u_holiday=formally_holiday_limit_count)
+                                         group_tuesday_list, form_obj, u_holiday=formally_holiday_limit_count)
                         group_thursday_list = get_special_list(Thursday, selected_group, form_obj)
                         special_day_cal_(ind, i, 'Thu', thursday_limit_count, shift_count_limit_count,
-                                         group_thursday_list,
-                                         form_obj, u_holiday_days=selected_formally_holiday,
-                                         u_holiday=formally_holiday_limit_count)
+                                         group_thursday_list, form_obj, u_holiday=formally_holiday_limit_count)
                         group_friday_list = get_special_list(Friday, selected_group, form_obj)
                         special_day_cal_(ind, i, 'Fri', friday_limit_count, shift_count_limit_count,
-                                         group_friday_list,
-                                         form_obj)
+                                         group_friday_list, form_obj)
                         normal_day_cal_(ind, i, normal_limit_count, shift_count_limit_count, form_obj,
-                                        u_holiday_days=selected_formally_holiday,
                                         u_holiday=formally_holiday_limit_count)
                     # done_days_list = ShiftDay.objects.get(group=selected_group, j_day_num__gte=selected_day_first,
                     #                                       j_month_num__gte=selected_month_first,

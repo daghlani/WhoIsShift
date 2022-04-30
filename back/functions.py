@@ -127,8 +127,75 @@ def check_shift_day_exists(type_, grp):
     return ShiftDay.objects.filter(type='{}__{}'.format(type_, grp.prefix)).exists()
 
 
-def special_day_cal_(ind, j, d_type, d_count, group_shift_count, people_group_type_list, form_obj, u_holiday_days=None,
-                     u_holiday=None):
+def formal_holidays_cal_(ind, j, d_count, group_shift_count, people_group_type_list, form_obj):
+    group = form_obj.group
+    if check_shift_day_exists(j, group):
+        printer('type Formal {} exists'.format('{}__{}'.format(j, group.prefix)))
+        return
+    j_name, j_date = j.split('__')
+    is_formal_ = False
+    if 'U_' in j_name:
+        is_formal_ = True
+    greg_j_date_y, greg_j_date_m, greg_j_date_d = j_date.split('/')
+    y, m, d = gregorian_to_jalali(int(greg_j_date_y), int(greg_j_date_m), int(greg_j_date_d))
+    if is_formal_:
+        i_people = []
+        unavailable_people = []
+        print('group_shift_count Formal is: ', d_count)
+        print('start Formal people_group_type_list is :-----------------{}---------------------'.format(
+            people_group_type_list))
+        for _time in range(d_count):
+            print('people day is: {}'.format(people_group_type_list))
+            while True:
+                print('using Formal list is: ', people_group_type_list)
+                try:
+                    person = people_group_type_list[0]
+                except Exception as err:
+                    logger.debug(err)
+                    print(err)
+                    break
+                if check_last_n_days(y=y, m=m, d=d, group=group, name=person, shift_count_num=group_shift_count):
+                    a = people_group_type_list.pop(0)
+                    i_people.append(a)
+                    Profile.objects.filter(group=group, user__username=person).update(
+                        shift_count=F('shift_count') + 1)
+                    people_group_type_list.append(a)
+                    break
+                else:
+                    print('changing Formal list......')
+                    print('list was: ', people_group_type_list)
+                    u = people_group_type_list.pop(0)
+                    unavailable_people.append(u)
+                    print('unavailable_people Formal list is: ', unavailable_people)
+                    print('now list is: ', people_group_type_list)
+                    continue
+        people_group_type_list = unavailable_people + people_group_type_list
+        ShiftDay.objects.create(
+            shift=form_obj,
+            index_num=ind,
+            j_day_num=d,
+            j_month_num=m,
+            j_year_num=y,
+            group=group,
+            night_people_list=','.join(i_people),
+            day_people_list='',
+            type='{}__{}'.format(rm_U(j), group.prefix),
+            is_formally_holiday=is_formal_,
+            day_responsible=None,
+            night_responsible=None
+        )
+        print('______________________________________________________')
+        print('finally list is: ', people_group_type_list)
+        print('______________________________________________________')
+        print('Updating Formal record of {} ....'.format(group))
+        type_obj_ = models.FormalH.objects.get(group=form_obj.group)
+        type_obj_.people_list = ','.join(people_group_type_list)
+        type_obj_.save()
+        print('Updating Formal record of {} Done'.format(group))
+        print(100 * '-')
+
+
+def special_day_cal_(ind, j, d_type, d_count, group_shift_count, people_group_type_list, form_obj, u_holiday=None):
     group = form_obj.group
     if check_shift_day_exists(j, group):
         printer('type {} exists'.format('{}__{}'.format(j, group.prefix)))
@@ -136,13 +203,11 @@ def special_day_cal_(ind, j, d_type, d_count, group_shift_count, people_group_ty
     j_name, j_date = j.split('__')
     is_formal_ = False
     if 'U_' in j_name:
-        is_formal_ = True
         j_name = rm_U(j_name)
-        d_count = u_holiday if u_holiday is not None else 1
-        print('d_count is: ', d_count)
+        is_formal_ = True
     greg_j_date_y, greg_j_date_m, greg_j_date_d = j_date.split('/')
     y, m, d = gregorian_to_jalali(int(greg_j_date_y), int(greg_j_date_m), int(greg_j_date_d))
-    if j_name == d_type:
+    if j_name == d_type and is_formal_ is False:
         i_people = []
         unavailable_people = []
         print('d_count is: ', d_count)
@@ -184,9 +249,9 @@ def special_day_cal_(ind, j, d_type, d_count, group_shift_count, people_group_ty
             night_people_list=','.join(i_people),
             day_people_list='',
             type='{}__{}'.format(rm_U(j), group.prefix),
-        is_formally_holiday = is_formal_,
-                              day_responsible = None,
-                                                night_responsible = None
+            is_formally_holiday=is_formal_,
+            day_responsible=None,
+            night_responsible=None
         )
         print('______________________________________________________')
         print('finally list is: ', people_group_type_list)
@@ -199,7 +264,7 @@ def special_day_cal_(ind, j, d_type, d_count, group_shift_count, people_group_ty
         print(100 * '-')
 
 
-def normal_day_cal_(ind, j, d_count, group_shift_count, form_obj, u_holiday_days=None, u_holiday=None):
+def normal_day_cal_(ind, j, d_count, group_shift_count, form_obj, u_holiday=None):
     group = form_obj.group
     people_list = form_obj.people_list.split(',')
     j_name, j_date = j.split('__')
@@ -212,9 +277,7 @@ def normal_day_cal_(ind, j, d_count, group_shift_count, form_obj, u_holiday_days
     if 'U_' in j_name:
         is_formal_ = True
         j_name = rm_U(j_name)
-        d_count = u_holiday if u_holiday is not None else 1
-        print('d_count is: ', d_count)
-    if j_name not in ['Tue', 'Thu', 'Fri']:
+    if j_name not in ['Tue', 'Thu', 'Fri'] and is_formal_ is False:
         i_people = []
         unavailable_people = []
         print('d_count is: ', d_count)
