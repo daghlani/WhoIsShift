@@ -63,7 +63,7 @@ def get_class(kls):
 
 # def maintain_day(day_type):
 #     day = ShiftDay.objects.get(type=day_type)
-#     people_of_day = day.night_people_list.split(',')
+#     people_of_day = list(filter(None, day.night_people_list.split(',')))
 #     _type, _date, _grp = day_type.split('__')
 #     grp = ShiftGroup.objects.get(prefix=_grp)
 #     standard_count = grp.get_req_of_type(_type)
@@ -119,9 +119,6 @@ def check_last_n_days(y, m, d, group, name, shift_count_num, i_people):
             return False
     return True
 
-
-# ToDo fix bug of add same person when all people can not add in calculating day, so current person will be added
-#  multiple time, when the day need more than one people
 
 def check_shift_day_exists(type_, grp):
     return ShiftDay.objects.filter(type='{}__{}'.format(type_, grp.prefix)).exists()
@@ -268,7 +265,7 @@ def special_day_cal_(ind, j, d_type, d_count, group_shift_count, people_group_ty
 
 def normal_day_cal_(ind, j, d_count, group_shift_count, form_obj, u_holiday=None):
     group = form_obj.group
-    people_list = form_obj.people_list.split(',')
+    people_list = list(filter(None, form_obj.people_list.split(',')))
     j_name, j_date = j.split('__')
     greg_j_date_y, greg_j_date_m, greg_j_date_d = j_date.split('/')
     if check_shift_day_exists(j, group):
@@ -330,14 +327,14 @@ def normal_day_cal_(ind, j, d_count, group_shift_count, form_obj, u_holiday=None
 
 def get_special_list(model, _group, form_obj):
     try:
-        group_list = model.objects.get(group=_group).people_list.split(',')
+        group_list = list(filter(None, model.objects.get(group=_group).people_list.split(',')))
     # except model.DoesNotExist:
     except Exception as err:
         logger.error(err)
         print('probably model does not exist!!!!!!!!!!!!!!!!!!!')
         model.objects.create(group=_group, people_list=form_obj.people_list, back_people_list=form_obj.people_list)
         print('{} object of group {} created!!!!!!!!!!!!!!!!!!'.format(model, _group))
-        group_list = model.objects.get(group=_group).people_list.split(',')
+        group_list = list(filter(None, model.objects.get(group=_group).people_list.split(',')))
     return group_list
 
 

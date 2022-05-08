@@ -269,7 +269,7 @@ def shift_create_tr(request):
                 form_obj.group = selected_group
                 form_obj.save()
                 ################################################################################################
-                days_list = form_obj.days_name.split(',')
+                days_list = list(filter(None, form_obj.days_name.split(',')))
                 # Detect formal holidays
                 for ind, day in enumerate(days_list):
                     greg_j_date_y, greg_j_date_m, greg_j_date_d = day.split('__')[1].split('/')
@@ -320,15 +320,19 @@ def shift_create_tr(request):
                                                                      j_year_num=selected_year_last)
                     for day in itertools.chain(all_days_of_first_month, all_days_of_last_month):
                         persian_list = []
-                        pp_list = day.night_people_list.split(',')
+                        pp_list = list(filter(None, day.night_people_list.split(',')))
                         print(pp_list, day.type)
-                        if pp_list[0] != '':
-                            for pr in pp_list:
-                                ls_name = Profile.objects.get(user__username=pr).last_name
-                                print(ls_name)
-                                persian_list.append(ls_name if ls_name != ' ' else pr)
-                        day.night_pr_people_list = ','.join(persian_list)
-                        day.save()
+                        try:
+                            if len(pp_list) > 0:
+                                for pr in pp_list:
+                                    ls_name = Profile.objects.get(user__username=pr).last_name
+                                    print(ls_name)
+                                    persian_list.append(ls_name if ls_name != ' ' else pr)
+                                day.night_pr_people_list = ','.join(persian_list)
+                                day.save()
+                        except Exception as err:
+                            print(err)
+                            logger.error(err)
 
                 x = Thread(target=calc)
                 x.start()
