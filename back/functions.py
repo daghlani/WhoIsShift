@@ -94,7 +94,7 @@ def get_class(kls):
 
 
 # def check_last_n_days(y, m, d, group, name,  shift_count_num, n=2):
-def check_last_n_days(y, m, d, group, name, shift_count_num):
+def check_last_n_days(y, m, d, group, name, shift_count_num, i_people):
     print('name: ', name)
     counter = 0
     n = group.rest_number
@@ -109,7 +109,7 @@ def check_last_n_days(y, m, d, group, name, shift_count_num):
                                         j_year_num=delta_day[0])
             night_people = obj_.night_people_list
             day_people = obj_.day_people_list
-            if name in day_people or name in night_people:
+            if name in day_people or name in night_people or name in i_people:
                 printer("%s is in night_list: %s" % (name, night_people))
                 return False
         except ShiftDay.DoesNotExist:
@@ -154,7 +154,8 @@ def formal_holidays_cal_(ind, j, d_count, group_shift_count, people_group_type_l
                     logger.debug(err)
                     print(err)
                     break
-                if check_last_n_days(y=y, m=m, d=d, group=group, name=person, shift_count_num=group_shift_count):
+                if check_last_n_days(y=y, m=m, d=d, group=group, name=person, shift_count_num=group_shift_count,
+                                     i_people=i_people):
                     a = people_group_type_list.pop(0)
                     i_people.append(a)
                     Profile.objects.filter(group=group, user__username=person).update(
@@ -223,7 +224,8 @@ def special_day_cal_(ind, j, d_type, d_count, group_shift_count, people_group_ty
                     logger.debug(err)
                     print(err)
                     break
-                if check_last_n_days(y=y, m=m, d=d, group=group, name=person, shift_count_num=group_shift_count):
+                if check_last_n_days(y=y, m=m, d=d, group=group, name=person, shift_count_num=group_shift_count,
+                                     i_people=i_people):
                     a = people_group_type_list.pop(0)
                     i_people.append(a)
                     Profile.objects.filter(group=group, user__username=person).update(
@@ -290,7 +292,8 @@ def normal_day_cal_(ind, j, d_count, group_shift_count, form_obj, u_holiday=None
                 except Exception as err:
                     logger.debug(err)
                     break
-                if check_last_n_days(y=y, m=m, d=d, group=group, name=person, shift_count_num=group_shift_count):
+                if check_last_n_days(y=y, m=m, d=d, group=group, name=person, shift_count_num=group_shift_count,
+                                     i_people=i_people):
                     a = people_list.pop(0)
                     i_people.append(a)
                     Profile.objects.filter(group=group, user__username=person).update(shift_count=F('shift_count') + 1)

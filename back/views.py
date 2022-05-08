@@ -210,6 +210,7 @@ def shift(request, grp_name):
         texts['day_res'] = KeyValue.day_res
         texts['grp_num'] = grp.phone_number
         texts['night'] = KeyValue.night
+        # texts['day'] = KeyValue.day
         texts['night_res'] = KeyValue.night_res
         context['texts'] = texts
         context['form'] = form
@@ -320,7 +321,7 @@ def shift_create_tr(request):
                     for day in itertools.chain(all_days_of_first_month, all_days_of_last_month):
                         persian_list = []
                         pp_list = day.night_people_list.split(',')
-                        print(pp_list[0])
+                        print(pp_list, day.type)
                         if pp_list[0] != '':
                             for pr in pp_list:
                                 ls_name = Profile.objects.get(user__username=pr).last_name

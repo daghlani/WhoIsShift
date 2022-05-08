@@ -15,7 +15,7 @@
                     <th class="task_row">{{ texts.row }}</th>
                     <th class="task_row">{{ texts.type|type_splitter }}</th>
                     <th class="task_row">{{ texts.date }}</th>
-                    <th class="task_row">{{ texts.day }}</th>
+{#                    <th class="task_row">{{ texts.day }}</th>#}
 {#                    <th class="task_row">{{ texts.day_res }}</th>#}
                     <th class="task_row">{{ texts.grp_num|l10n_num:"fa" }} - {{ texts.day_st }}</th>
                     <th class="task_row">{{ texts.night }}</th>
@@ -32,8 +32,8 @@
                         <td>{{ row.j_year_num|l10n_num:"fa" }} - {{ row.j_month_num|l10n_num:"fa" }}
                             - {{ row.j_day_num|l10n_num:"fa" }}</td>
                         <!--<td>{{ row.day_people_list }}</td>-->
-                        <td>{% if row.day_pr_people_list != "" %}{{ row.day_pr_people_list }}{% else %}
-                            {{ row.day_people_list }}{% endif %}</td>
+{#                        <td>{% if row.day_pr_people_list != "" %}{{ row.day_pr_people_list }}{% else %}#}
+{#                            {{ row.day_people_list }}{% endif %}</td>#}
                         <td>{{ row.day_responsible }}</td>
                         <!--<td>{{ row.night_people_list }}</td>-->
                         <!--<td>{{ row.night_pr_people_list }}</td>-->
